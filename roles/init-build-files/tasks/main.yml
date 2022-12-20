@@ -15,7 +15,7 @@
 #     register: dir_to_check
    
 - name: Move the config files to the persistent/permanent storage location expected by Docker
-  ansible.builtin.import_tasks: move-files.yml
+  include_tasks: move-files.yml
   loop:
     - name: consul_dir
       source_dir: "{{ base_dir }}/{{ consul_build_files_dir }}"
