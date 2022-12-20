@@ -30,8 +30,8 @@
     - name: Init consul config and build files
       include_role:
         name: init-build-files
-        vars:
-          force_fetch: true
+      vars:
+        force_fetch: true
       #vars: #try this to see if vars from top level play are passed in
         #base_dir: "{{ base_dir }}"
         #vault_config_dir: 
