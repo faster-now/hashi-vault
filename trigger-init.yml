@@ -13,3 +13,4 @@
       ansible.builtin.git:
         repo: 'https://github.com/faster-now/hashi-vault.git'
         dest: "{{ base_dir }}"
+        force: true
