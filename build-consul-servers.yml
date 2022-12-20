@@ -8,22 +8,39 @@
       - consul-b
       - consul-c
     consul_image_name: my-consul
-    temp_build_dir: /tmp/build/consul
+    #temp_build_dir: /tmp/build/consul
+    base_dir: ~/ansible
+    consul_build_files_dir: consul-files
+    vault_build_files_dir: vault-files
+    base_vault_dir: ~/vault
+    base_consul_dir: ~/consul
+    vault_config_dir: ~/vault/config
+    consul_config_dir: ~/consul/config
+
   gather_facts: no
   remote_user: "{{ user }}"
   become: no
+
   tasks:
     - name: Init consul config and build files
       include_role:
         name: init-build-files
-      vars:
-        temp_build_dir: /tmp/build/consul
-        dest_config_dir: ~/consul
-        dest_build_dir: ~/consul-build
+      #vars: #try this to see if vars from top level play are passed in
+        #base_dir: "{{ base_dir }}"
+        #vault_config_dir: 
+        #consul_config_dir:
+
+    # - name: Init consul config and build files
+    #   include_role:
+    #     name: init-build-files
+    #   vars:
+    #     temp_build_dir: /tmp/build/consul
+    #     dest_config_dir: ~/consul
+    #     dest_build_dir: ~/consul-build
 
     - name: Create local persistent storage directory for Consul servers (in preparation for Docker volume)
       file:
-        path: "~/consul-storage/{{item}}"
+        path: "{{ base_consul_dir }}/consul-storage/{{ item }}"
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
@@ -33,7 +50,7 @@
     - name: Build a Consul image
       docker_image:
         build:
-          path: ~/consul-build #Dockerfile for Consul build should be in user dir/ansible-build subfolder
+          path: "{{ base_dir }}/{{ consul_build_files_dir }}" #Dockerfile for Consul build should be in user dir/ansible-build subfolder
         name: "{{consul_image_name}}"
         tag: v1
         force_source: yes
