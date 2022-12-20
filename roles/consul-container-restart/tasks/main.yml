@@ -7,7 +7,7 @@
     image: "{{ consul_image_name }}:{{ consul_image_version }}"
     state: started
     restart_policy: unless-stopped
-    restart: {{ container_restart }}
+    restart: "{{ container_restart }}"
     networks:
       - name: "{{ docker_network }}"
 #    ports:
