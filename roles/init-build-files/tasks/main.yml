@@ -1,31 +1,52 @@
 ---
-
 #temp_build_dir should be service specific dir containing files e.g. /tmp/build/consul
 #dest_config_dir should be the service specific config dir that config files will be copied to e.g. ~/vault/config (no trailing /)
 #dest_build_dir should be the specific build dir for the relevant service e.g. ~/vault-build (no trailing /)
-- name: Pull down all the required ansible, app config and docker files to build the stack
-  ansible.builtin.git:
-    repo: 'https://github.com/faster-now/hashi-vault.git'
-    dest: "{{ base_dir }}"
-    force: true
-      #version: release-0.22
 
-# - name: Check if the temp build directory exists
-#     ansible.builtin.stat:
-#        path: "{{ temp_build_dir }}"
-#     register: dir_to_check
+- name: Check if the temp build config file exists
+  ansible.builtin.stat:
+      path: "{{ base_dir }}/consul-files/{{ consul_servers[0] }}.hcl"
+  register: temp_file
+
+- name: Fetch the build files from github
+  include_role:
+    name: fetch-build-files
+  when: not temp_file.stat.exists or {{ force_fetch }}
    
-- name: Move the config files to the persistent/permanent storage location expected by Docker
+- name: Move the consul config files to the persistent/permanent storage location expected by Docker
   include_tasks: move-files.yml
-  loop:
-    - name: consul_dir
-      source_dir: "{{ base_dir }}/{{ consul_build_files_dir }}"
-      dest_dir: "{{ consul_config_dir }}"
-    - name: vault_dir 
-      source_dir: "{{ base_dir }}/{{ vault_build_files_dir }}"
-      dest_dir: "{{ vault_config_dir }}"
-  loop_control:
-    loop_var: files_dir
+  vars:
+    src_file: "{{ base_dir }}/{{ consul_build_files_dir }}/{{ item }}.hcl"
+    dst_file: "{{ base_consul_dir }}/{{ item }}/config/{{ item }}.hcl"
+  loop: "{{ consul_servers }}"
+  when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
+
+- name: Move the vault config files to the persistent/permanent storage location expected by Docker
+  include_tasks: move-files.yml
+  vars:
+    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item.key }}.hcl"
+    dst_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
+  loop: "{{ vault_servers }}"
+  when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
+
+- name: Move the vault consul client config files to the persistent/permanent storage location expected by Docker
+  include_tasks: move-files.yml
+  vars:
+    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item.key }}-consul.hcl"
+    dst_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.hcl"
+  loop: "{{ vault_servers }}"
+  when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
+
+  # loop:
+  #   - name: consul_dir
+  #     source_dir: "{{ base_dir }}/{{ consul_build_files_dir }}"
+  #     dest_dir: "{{ consul_config_dir }}"
+  #   - name: vault_dir
+  #     source_dir: "{{ base_dir }}/{{ vault_build_files_dir }}"
+  #     dest_dir: "{{ vault_config_dir }}"
+  # loop_control:
+  #   loop_var: files_dir
+
 
   # - name: Copy temp build files to build dir
   #   copy:

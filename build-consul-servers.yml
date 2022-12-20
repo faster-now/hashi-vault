@@ -7,6 +7,9 @@
       - consul-a
       - consul-b
       - consul-c
+    vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
+      vault-a: 8200
+      vault-b: 8800
     consul_image_name: my-consul
     #temp_build_dir: /tmp/build/consul
     base_dir: ~/ansible
@@ -15,16 +18,20 @@
     base_vault_dir: ~/vault
     base_consul_dir: ~/consul
     vault_config_dir: ~/vault/config
-    consul_config_dir: ~/consul/config
+    consul_config_dir: "{{ base_consul_dir }}/config"
+    #force_fetch: true #Assume consul will be built first and force fetch of build files
 
   gather_facts: no
   remote_user: "{{ user }}"
   become: no
 
+#"{{ base_dir }}/{{ consul_build_files_dir }}/{{ consul_servers[0] }}"
   tasks:
     - name: Init consul config and build files
       include_role:
         name: init-build-files
+        vars:
+          force_fetch: true
       #vars: #try this to see if vars from top level play are passed in
         #base_dir: "{{ base_dir }}"
         #vault_config_dir: 
@@ -40,7 +47,7 @@
 
     - name: Create local persistent storage directory for Consul servers (in preparation for Docker volume)
       file:
-        path: "{{ base_consul_dir }}/consul-storage/{{ item }}"
+        path: "{{ base_consul_dir }}/{{ item }}/consul-storage"
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
