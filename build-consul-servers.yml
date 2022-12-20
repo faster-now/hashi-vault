@@ -69,8 +69,7 @@
       vars:
         container_name: "{{ consul_server }}"
         consul_image_version: "v1"
-        consul_dir: "~/consul"
-        consul_storage_dir: "~/consul-storage"
+        consul_storage_dir: "{{ base_consul_dir }} /consul-storage"
         container_restart: yes
       loop: "{{ consul_servers }}"
       loop_control:
