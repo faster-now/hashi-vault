@@ -13,6 +13,11 @@
 #   with_fileglob:
 #     - "{{ files_dir.source_dir }}/*.hcl"
 
+- name: Create persistent storage directory
+  file:
+    state: present
+    path: "{{ dst_dir }}"
+
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
   copy:
     src: "{{ src_file }}"
@@ -21,6 +26,6 @@
 - name: Delete temp config files
   file:
     state: absent
-    path: "{{ src_file }}"   
+    path: "{{ src_file }}"
 
     #consul/consul-a/config
