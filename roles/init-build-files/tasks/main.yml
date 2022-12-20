@@ -35,7 +35,7 @@
         source_dir: "{{ base_dir }}/{{ vault_build_files_dir }}"
         dest_dir: "{{ vault_config_dir }}"
   loop_control:
-    - files_dir
+    loop_var: files_dir
 
   # - name: Copy temp build files to build dir
   #   copy:

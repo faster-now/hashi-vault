@@ -75,5 +75,6 @@
         docker_network: "{{ docker_network }}"
         container_restart: yes
       loop: "{{ consul_servers }}"
-      loop_control: consul_server
+      loop_control:
+        loop_var: consul_server
     
