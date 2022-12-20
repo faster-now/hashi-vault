@@ -15,7 +15,7 @@
 #      - "7300:7300"
 #      - "7301:7301"
     volumes:
-      - "{{ base_consul_dir }}/{{ item }}.hcl:/etc/consul/consul.hcl"
-      - "{{ consul_storage_dir }}/{{ item }}/:/opt/consul-storage"
+      - "{{ base_consul_dir }}/{{ consul_server }}.hcl:/etc/consul/consul.hcl"
+      - "{{ consul_storage_dir }}/{{ consul_server }}/:/opt/consul-storage"
       # - /opt/test-static/nginx/ssl/:/etc/nginx/ssl
       # - /opt/test-static/public/:/opt/test-static/public
