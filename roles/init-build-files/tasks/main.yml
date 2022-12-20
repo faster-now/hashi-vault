@@ -4,9 +4,9 @@
 #dest_config_dir should be the service specific config dir that config files will be copied to e.g. ~/vault/config (no trailing /)
 #dest_build_dir should be the specific build dir for the relevant service e.g. ~/vault-build (no trailing /)
 - name: Pull down all the required ansible, app config and docker files to build the stack
-    ansible.builtin.git:
-      repo: 'https://github.com/faster-now/hashi-vault.git'
-      dest: "{{ base_dir }}"
+  ansible.builtin.git:
+    repo: 'https://github.com/faster-now/hashi-vault.git'
+    dest: "{{ base_dir }}"
       #version: release-0.22
 
 # - name: Check if the temp build directory exists
