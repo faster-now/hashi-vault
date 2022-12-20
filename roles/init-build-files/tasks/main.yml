@@ -14,19 +14,8 @@
 #        path: "{{ temp_build_dir }}"
 #     register: dir_to_check
    
-- block:
-  - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
-    copy:
-      src: "{{ item }}"
-      dest: "{{ files_dir.dest_dir }}/" #trailing / means directory will be created where doesnt already exist
-    with_fileglob:
-      - "{{ files_dir.source_dir }}/*.hcl"
-  - name: Delete temp config files
-    file:
-      state: absent
-      path: "{{ item }}"
-    with_fileglob:
-      - "{{ files_dir.source_dir }}/*.hcl"
+- name: Move the config files to the persistent/permanent storage location expected by Docker
+  include_tasks: move-files.yml
   loop:
     - name: consul_dir
       source_dir: "{{ base_dir }}/{{ consul_build_files_dir }}"
