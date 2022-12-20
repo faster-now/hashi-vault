@@ -25,7 +25,7 @@
   remote_user: "{{ user }}"
   become: no
 
-#"{{ base_dir }}/{{ consul_build_files_dir }}/{{ consul_servers[0] }}"
+  #"{{ base_dir }}/{{ consul_build_files_dir }}/{{ consul_servers[0] }}"
   tasks:
     - name: Init consul config and build files
       include_role:
