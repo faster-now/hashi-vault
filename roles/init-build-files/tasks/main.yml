@@ -1,0 +1,36 @@
+---
+#temp_build_dir should be service specific dir containing files e.g. /tmp/build/consul
+#dest_config_dir should be the service specific config dir that config files will be copied to e.g. ~/vault/config (no trailing /)
+#dest_build_dir should be the specific build dir for the relevant service e.g. ~/vault-build (no trailing /)
+- name: Check if the temp build directory exists
+    ansible.builtin.stat:
+       path: "{{ temp_build_dir }}"
+    register: dir_to_check
+   
+- block: #Only perform this block where the consul build dir actually exists
+  - name: Copy config files from temp build dir to persistant storage location (ready for Docker volume)
+    copy:
+      src: "{{ item }}"
+      dest: "{{ dest_config_dir }}/" #trailing / means directory will be created where doesnt already exist
+    with_fileglob:
+      - "{{ temp_build_dir }}/*.hcl"
+
+  - name: Delete temp build config files
+    file:
+      state: absent
+      path: "{{ item }}"
+    with_fileglob:
+      - "{{ temp_build_dir }}/*.hcl"
+
+  - name: Copy consul build files to build dir
+    copy:
+      src: "{{ item }}"
+      dest: "{{ dest_build_dir }}"/ #trailing / means directory will be created where doesnt already exist
+    with_fileglob:
+      - "{{ temp_build_dir }}/*"
+
+  - name: Delete temp build consul directory
+    file:
+      state: absent
+      path: "{{ temp_build_dir }}/"
+  when: dir_to_check.stat.isdir is defined and dir_to_check.stat.isdir
