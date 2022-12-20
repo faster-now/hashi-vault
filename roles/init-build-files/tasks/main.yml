@@ -29,11 +29,11 @@
       - "{{ files_dir.source_dir }}/*.hcl"
   loop:
     - name: consul_dir
-        source_dir: "{{ base_dir }}"/"{{ consul_build_files_dir }}"
-        dest_dir: "{{ consul_config_dir }}"
+      source_dir: "{{ base_dir }}"/"{{ consul_build_files_dir }}"
+      dest_dir: "{{ consul_config_dir }}"
     - name: vault_dir 
-        source_dir: "{{ base_dir }}"/"{{ vault_build_files_dir }}"
-        dest_dir: "{{ vault_config_dir }}"
+      source_dir: "{{ base_dir }}"/"{{ vault_build_files_dir }}"
+      dest_dir: "{{ vault_config_dir }}"
   loop_control:
     loop_var: files_dir
 
