@@ -1,11 +1,11 @@
 ---
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
-    copy:
-      src: "{{ item }}"
-      dest: "{{ files_dir.dest_dir }}/" #trailing / means directory will be created where doesnt already exist
-    with_fileglob:
-      - "{{ files_dir.source_dir }}/*.hcl"
-      
+  copy:
+    src: "{{ item }}"
+    dest: "{{ files_dir.dest_dir }}/" #trailing / means directory will be created where doesnt already exist
+  with_fileglob:
+    - "{{ files_dir.source_dir }}/*.hcl"
+
 - name: Delete temp config files
   file:
     state: absent
