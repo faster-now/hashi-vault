@@ -15,7 +15,7 @@
 
 - name: Create persistent storage directory
   file:
-    state: present
+    state: directory
     path: "{{ dst_dir }}"
 
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
