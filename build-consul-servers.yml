@@ -68,7 +68,6 @@
         name: consul-container-restart
       vars:
         container_name: "{{ consul_server }}"
-        consul_image_name: "{{ consul_image_name }}"
         consul_image_version: "v1"
         consul_dir: "~/consul"
         consul_storage_dir: "~/consul-storage"
