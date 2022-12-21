@@ -31,16 +31,16 @@
       file:
         path: "{{ base_consul_dir }}/{{ item }}/consul-storage"
         state: directory
-        owner: "{{user}}"
-        group: "{{user}}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: 0775
-      loop: "{{consul_servers}}"
+      loop: "{{ consul_servers }}"
 
     - name: Build a Consul image
       docker_image:
         build:
           path: "{{ base_dir }}/{{ consul_build_files_dir }}" #Dockerfile for Consul build should be in user dir/ansible-build subfolder
-        name: "{{consul_image_name}}"
+        name: "{{ consul_image_name }}"
         tag: v1
         force_source: yes
         #push: yes
