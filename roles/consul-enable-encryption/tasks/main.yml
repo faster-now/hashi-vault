@@ -29,6 +29,16 @@
     - consul_enc_key is defined
   loop: "{{consul_servers}}"
 
+
+- name: Check if vault consul client encryption key is already defined
+  lineinfile:
+    state: absent
+    path: "{{ base_vault_dir }}/{{ lookup('dict', vault_servers)[0] }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
+    regexp: "^encrypt\\s*=\\s*"
+  check_mode: true
+  changed_when: false # This just makes things look prettier in the logs
+  register: client_key_needs_created
+
 - name: Add new encryption key to vault consul client config
   lineinfile:
     path: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl" #Add to all config files
@@ -37,7 +47,7 @@
   register: key_added
   #notify: Restart consul #even though in a loop, will only result in one restart (handler takes care of restating all containers)
   when:
-    - not key_needs_created.found or regenerate
+    - not client_key_needs_created.found or regenerate
     - consul_enc_key is defined
   with_dict: "{{vault_servers}}"
 
