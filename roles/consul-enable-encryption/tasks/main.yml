@@ -47,7 +47,7 @@
   register: key_added
   #notify: Restart consul #even though in a loop, will only result in one restart (handler takes care of restating all containers)
   when:
-    - not client_key_needs_created.found or regenerate
+    - (client_key_needs_created.changed is defined and client_key_needs_created.changed) or regenerate
     - consul_enc_key is defined
   with_dict: "{{vault_servers}}"
 
