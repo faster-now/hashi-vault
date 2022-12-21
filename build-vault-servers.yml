@@ -51,7 +51,7 @@
         owner: "{{user}}"
         group: "{{user}}"
         mode: 0775
-      loop: "{{ vault_servers }}"  
+      with_dict: "{{ vault_servers }}"  
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
       file:
