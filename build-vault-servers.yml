@@ -9,6 +9,7 @@
     vault_image_name: my-vault
     #temp_build_dir: /tmp/build/vault
     base_vault_dir: ~/vault
+    vault_audit_dir: /opt/vault
   gather_facts: no
   remote_user: "{{user}}"
   become: no
@@ -131,3 +132,7 @@
       #loop: "{{ consul_servers }}"
       #loop_control:
       #  loop_var: consul_server
+
+    - name: Create vault docker containers
+      include_role:
+        name: vault-container-restart
