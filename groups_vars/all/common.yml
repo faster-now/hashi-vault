@@ -1,0 +1,4 @@
+---
+docker_network: vault_net
+user: azureuser
+base_dir: ~/ansible

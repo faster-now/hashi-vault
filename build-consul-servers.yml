@@ -1,24 +1,6 @@
 ---
 - hosts: all
-  vars:
-    docker_network: vault_net
-    user: azureuser
-    consul_servers:
-      - consul-a
-      - consul-b
-      - consul-c
-    vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
-      vault-a: 8200
-      vault-b: 8800
-    consul_image_name: my-consul
-    #temp_build_dir: /tmp/build/consul
-    base_dir: ~/ansible
-    consul_build_files_dir: consul-files
-    vault_build_files_dir: vault-files
-    base_vault_dir: ~/vault
-    base_consul_dir: ~/consul
-    vault_config_dir: ~/vault/config
-    consul_config_dir: "{{ base_consul_dir }}/config"
+
     #force_fetch: true #Assume consul will be built first and force fetch of build files
 
   gather_facts: no
