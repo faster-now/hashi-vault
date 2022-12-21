@@ -137,6 +137,12 @@
       #loop_control:
       #  loop_var: consul_server
 
+    - name: Enable consul layer gossip encryption
+      include_role:
+        name: consul-enable-encryption
+
     - name: Initialise and unseal Vault
       include_role:
         name: vault-init
+
+    
