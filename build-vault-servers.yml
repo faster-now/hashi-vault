@@ -9,7 +9,7 @@
     vault_image_name: my-vault
     #temp_build_dir: /tmp/build/vault
     base_vault_dir: ~/vault
-    vault_audit_dir: /opt/vault
+    vault_container_audit_dir: /opt/vault
   gather_facts: no
   remote_user: "{{user}}"
   become: no
@@ -126,7 +126,7 @@
         vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.hcl"
         vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
         consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-        vault_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
+        vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
         container_restart: yes
       with_dict: "{{ vault_servers }}"  
       #loop: "{{ consul_servers }}"
