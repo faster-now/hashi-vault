@@ -17,6 +17,8 @@
   file:
     state: directory
     path: "{{ dst_dir }}"
+    msg: "The source file is set to {{ src_file }}."
+    msg: "The dest file is set to {{ dst_file }}."
 
 - debug:
     msg: "The destination dir is set to {{ dst_dir }}."
@@ -25,10 +27,6 @@
   copy:
     src: "{{ src_file }}"
     dest: "{{ dst_file }}"
-  
-- debug:
-    msg: "The source file is set to {{ src_file }}."
-    msg: "The dest file is set to {{ dst_file }}."
 
 - name: Delete temp config files
   file:
