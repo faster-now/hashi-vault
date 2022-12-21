@@ -30,19 +30,19 @@
 - name: Move the vault config files to the persistent/permanent storage location expected by Docker
   include_tasks: move-files.yml
   vars:
-    dst_dir: "{{ base_vault_dir }}/{{ item }}/config/"
-    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item }}.hcl"
-    dst_file: "{{ dst_dir }}{{ item }}.hcl"
-  with_items: "{{ my_vault_servers.key }}"
+    dst_dir: "{{ base_vault_dir }}/{{ item.key }}/config/"
+    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item.key }}.hcl"
+    dst_file: "{{ dst_dir }}{{ item.key }}.hcl"
+  with_items: "{{ lookup('dict', vault_servers) }}"
   when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
 
 - name: Move the vault consul client config files to the persistent/permanent storage location expected by Docker
   include_tasks: move-files.yml
   vars:
-    dst_dir: "{{ base_vault_dir }}/{{ item }}/config/"
-    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item }}-consul.hcl"
-    dst_file: "{{ dst_dir }}{{ item }}-consul.hcl"
-  with_items: "{{ my_vault_servers.key }}"
+    dst_dir: "{{ base_vault_dir }}/{{ item.key }}/config/"
+    src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item.key }}-consul.hcl"
+    dst_file: "{{ dst_dir }}{{ item.key }}-consul.hcl"
+  with_items: "{{ lookup('dict', vault_servers) }}"
   when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
 
   # loop:
