@@ -23,7 +23,7 @@
   vars:
     dst_dir: "{{ base_consul_dir }}/{{ item }}/config/"
     src_file: "{{ base_dir }}/{{ consul_build_files_dir }}/{{ item }}.hcl"
-    dst_file: "{{ dst_dir }}{{ item }}.hcl"
+    dst_file: "{{ dst_dir }}consul.hcl"
   loop: "{{ consul_servers }}"
   when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
 
