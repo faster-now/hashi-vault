@@ -32,7 +32,7 @@
   vars:
     dst_dir: "{{ base_vault_dir }}/{{ item.key }}/config/"
     src_file: "{{ base_dir }}/{{ vault_build_files_dir }}/{{ item.key }}.hcl"
-    dst_file: "{{ dst_dir }}{{ item.key }}.hcl"
+    dst_file: "{{ dst_dir }}vault.hcl"
   with_items: "{{ lookup('dict', vault_servers) }}"
   when: not temp_file.stat.exists or {{ force_fetch }} #since no register possible for include_role assume it succeeded
 
