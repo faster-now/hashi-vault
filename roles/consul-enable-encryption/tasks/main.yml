@@ -15,7 +15,7 @@
     command: -t "consul keygen"
   register: consul_enc_key
   when:
-    - key_needs_created.found or regenerate
+    - not key_needs_created.found or regenerate
 
 - name: Add new encryption key to config
   lineinfile:
