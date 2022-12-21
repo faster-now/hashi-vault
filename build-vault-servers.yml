@@ -133,6 +133,6 @@
       #loop_control:
       #  loop_var: consul_server
 
-    - name: Create vault docker containers
+    - name: Initialise and unseal Vault
       include_role:
-        name: vault-container-restart
+        name: vault-init
