@@ -1,4 +1,0 @@
----
-my_vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
-  vault-a: 8200
-  vault-b: 8800
