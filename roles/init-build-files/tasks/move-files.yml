@@ -18,7 +18,7 @@
     state: directory
     path: "{{ dst_dir }}"
 
-debug:
+- debug:
   msg: "The destination dir is set to {{ dst_dir }}."
 
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
@@ -26,7 +26,7 @@ debug:
     src: "{{ src_file }}"
     dest: "{{ dst_file }}"
   
-debug:
+- debug:
   msg: "The source file is set to {{ src_file }}."
   msg: "The dest file is set to {{ dst_file }}."
 
