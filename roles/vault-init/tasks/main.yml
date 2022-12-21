@@ -85,7 +85,6 @@
     method: PUT
     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
   register: unseal_vault_response
-  no_log: true
   run_once: true
   with_items:
     - "{{ vault_keys }}"
