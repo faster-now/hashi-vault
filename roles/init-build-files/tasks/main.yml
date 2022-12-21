@@ -2,6 +2,10 @@
 #temp_build_dir should be service specific dir containing files e.g. /tmp/build/consul
 #dest_config_dir should be the service specific config dir that config files will be copied to e.g. ~/vault/config (no trailing /)
 #dest_build_dir should be the specific build dir for the relevant service e.g. ~/vault-build (no trailing /)
+vars:
+  vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
+    vault-a: 8200
+    vault-b: 8800
 
 - name: Check if the temp build config file exists
   ansible.builtin.stat:
