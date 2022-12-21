@@ -125,6 +125,7 @@
         vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.hcl"
         vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
         consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+        vault_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
         container_restart: yes
       with_dict: "{{ vault_servers }}"  
       #loop: "{{ consul_servers }}"
