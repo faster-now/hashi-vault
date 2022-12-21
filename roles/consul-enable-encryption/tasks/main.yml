@@ -4,7 +4,7 @@
   lineinfile:
     state: absent
     path: "{{ base_consul_dir }}/{{ consul_servers[0] }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
-    regexp: "^encrypt\s*=\s*"
+    regexp: "^encrypt\\s*=\\s*"
   check_mode: true
   changed_when: false # This just makes things look prettier in the logs
   register: key_needs_created
