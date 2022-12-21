@@ -18,17 +18,17 @@
     state: directory
     path: "{{ dst_dir }}"
 
-  # debug:
-  #   var: dst_dir
+debug:
+  msg: "The destination dir is set to {{ dst_dir }}."
 
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
   copy:
     src: "{{ src_file }}"
     dest: "{{ dst_file }}"
   
-  # debug:
-  #   var: src_file
-  #   var: dst_file
+debug:
+  msg: "The source file is set to {{ src_file }}."
+  msg: "The dest file is set to {{ dst_file }}."
 
 - name: Delete temp config files
   file:
