@@ -12,7 +12,7 @@
 - name: Generate a new consul encryption key
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
-    command: -t consul keygen
+    command: docker -c "-t {{ consul_servers[0] }} consul keygen"
   register: consul_enc_key
   when:
     - not key_needs_created.found or regenerate
