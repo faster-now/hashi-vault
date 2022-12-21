@@ -128,7 +128,7 @@
         host_port: "{{ item.value }}"
         container_port: "{{ item.value }}"
         vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
-        vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
+        vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
         consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
         vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
         container_restart: yes
