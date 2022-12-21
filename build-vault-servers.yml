@@ -127,12 +127,12 @@
         vault_image_version: "v1"
         host_port: "{{ item.value }}"
         container_port: "{{ item.value }}"
-        vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.hcl"
+        vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
         vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
         consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
         vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
         container_restart: yes
-      with_dict: "{{ vault_containers }}"  
+      with_dict: "{{ vault_containers }}"
       #loop: "{{ consul_servers }}"
       #loop_control:
       #  loop_var: consul_server
