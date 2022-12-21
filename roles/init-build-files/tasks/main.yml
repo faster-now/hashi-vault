@@ -7,6 +7,10 @@
 #     vault-a: 8200
 #     vault-b: 8800
 
+- debug:
+    msg: "The base dir is set to {{ base_dir }}. 
+          The file is set to {{ consul_servers[0] }}."
+
 - name: Check if the temp build config file exists
   ansible.builtin.stat:
       path: "{{ base_dir }}/consul-files/{{ consul_servers[0] }}.hcl"
