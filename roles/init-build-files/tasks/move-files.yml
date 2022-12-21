@@ -13,13 +13,13 @@
 #   with_fileglob:
 #     - "{{ files_dir.source_dir }}/*.hcl"
 
+- debug:
+    msg: "The destination dir is set to {{ dst_file | dirname }}.\nThe source file is set to {{ src_file }}.\nThe dest file is set to {{ dst_file }}."
+
 - name: Create persistent storage directory
   file:
     state: directory
     path: "{{ dst_file | dirname }}"
-
-- debug:
-    msg: "The destination dir is set to {{ dst_file | dirname }}.\nThe source file is set to {{ src_file }}.\nThe dest file is set to {{ dst_file }}."
 
 - name: Copy config files from initial pull down dir to persistant storage location (ready for Docker volume)
   copy:
