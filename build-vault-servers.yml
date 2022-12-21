@@ -64,6 +64,7 @@
         owner: "{{user}}"
         group: "{{user}}"
         mode: 0777
+      become: yes  
       with_dict: "{{ vault_servers }}"
 
     # - name: Create persistent storage directory for Vault config (ready for Docker volume)
