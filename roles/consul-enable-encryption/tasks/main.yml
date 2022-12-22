@@ -20,7 +20,7 @@
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
     command: consul keyring -list
-  register: {{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') }}
+  register: "{{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') }}"
 
   #{{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
 # => ['1', '42']
