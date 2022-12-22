@@ -39,6 +39,9 @@
   #changed_when: false # This just makes things look prettier in the logs
   register: client_key_needs_created
 
+- debug:
+    msg: "Consul client key needed result: {{ client_key_needs_created }}. Is found: {{ client_key_needs_created.found }}"
+
 - name: Add new encryption key to vault consul client config
   lineinfile:
     path: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl" #Add to all config files
