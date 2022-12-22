@@ -9,6 +9,9 @@
   changed_when: false # This just makes things look prettier in the logs
   register: key_needs_created
 
+- debug:
+    msg: "Consul key needed result: {{ key_needs_created }}"
+
 - name: Generate a new consul encryption key
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
@@ -40,7 +43,10 @@
   register: client_key_needs_created
 
 - debug:
-    msg: "Consul client key needed result: {{ client_key_needs_created }}. Is found: {{ client_key_needs_created.found }}"
+    msg: "Consul client key needed result: {{ client_key_needs_created }}."
+
+- debug:
+    msg: "Consul client key is found: {{ client_key_needs_created.found }}"
 
 - name: Add new encryption key to vault consul client config
   lineinfile:
