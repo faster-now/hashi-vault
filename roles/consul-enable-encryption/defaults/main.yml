@@ -4,4 +4,4 @@ regenerate: false #by default do not generate a new consul enc key where one alr
 display_init_response: true
 tls_skip_verify: true
 consul_tls_disable: true
-consul_port: 7500
+consul_http_port: 7500
