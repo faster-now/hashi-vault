@@ -46,7 +46,7 @@
     msg: "Consul client key needed result: {{ client_key_needs_created }}."
 
 - debug:
-    msg: "Consul client key is found: {{ client_key_needs_created.found }}"
+    msg: "Lookup value: {{ lookup('dict', vault_servers)[0] }}"
 
 - name: Add new encryption key to vault consul client config
   lineinfile:
