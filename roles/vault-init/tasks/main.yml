@@ -13,7 +13,8 @@
     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
     status_code: 200,429,472,501,503
   register: vault_health_response
-  run_once: true
+  delay: 5 #every 5 seconds
+  retries: 12 #12*5 = 1 minutes
 
 
 - block:
