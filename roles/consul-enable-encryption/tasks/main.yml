@@ -25,7 +25,7 @@
 
 - set_fact:
     existing_consul_enc_key: "{{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') | first }}"
-  # when:
+  when: consul_keyring_results.stderr | length < 1
   #   - consul_keyring_results is defined
   #   - consul_keyring_results | length > 0
   #{{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
