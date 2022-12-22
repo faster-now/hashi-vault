@@ -19,7 +19,7 @@
 - name: Check if there is an existing gossip encryption key
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
-    command: CONSUL_HTTP_ADDR="http://127.0.0.1:7500" consul keyring -list
+    command: 'CONSUL_HTTP_ADDR="http://127.0.0.1:7500" consul keyring -list'
   register: consul_keyring_results
 
 - debug:
