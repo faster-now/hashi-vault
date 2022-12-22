@@ -1,16 +1,52 @@
 ---
 
-- name: Check if consul encryption key is already defined
-  lineinfile:
-    state: absent
-    path: "{{ base_consul_dir }}/{{ consul_servers[0] }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
-    regexp: "^encrypt\\s*=\\s*"
-  check_mode: true
-  changed_when: false # This just makes things look prettier in the logs
-  register: key_needs_created
+# - name: Check if consul encryption key is already defined
+#   lineinfile:
+#     state: absent
+#     path: "{{ base_consul_dir }}/{{ consul_servers[0] }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
+#     regexp: "^encrypt\\s*=\\s*"
+#   check_mode: true
+#   changed_when: false # This just makes things look prettier in the logs
+#   register: key_needs_created
+
+- name: Check if there is an existing gossip encryption key
+  uri:
+    url: "{{ consul_tls_disable | ternary('http', 'https') }}://{{ inventory_hostname }}:{{ consul_http_port }}/v1/sys/audit"
+    validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
+    status_code: 200
+    return_content: yes
+  register: consul_keyring_results
 
 - debug:
-    msg: "Consul key needed result: {{ key_needs_created }}"
+    msg: "Consul keyring result: {{ consul_keyring_results }}"
+
+- debug:
+    msg: "Consul keyring result: {{ consul_keyring_results.json.Keys }}"
+
+- debug:
+    msg: "Consul keyring result: {{ consul_keyring_results.json.Keys.key }}"
+
+# - name: Enable audit to file/disk
+#   uri:
+#     url: "{{ vault_tls_disable | ternary('http', 'https') }}://{{ inventory_hostname }}:{{ vault_port }}/v1/sys/audit/file"
+#     headers: 
+#       X-Vault-Token: "{{ vault_root_token }}"
+#     body:
+#       type: file
+#       options:
+#         file_path: "{{ vault_audit_dir }}/audit.log"
+#     body_format: json
+#     method: PUT
+#     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
+#     status_code: 200,204
+#   register: enable_file_audit
+#   run_once: true
+#   when:
+#     - file_audit_response.status == 200
+#     - file_audit_response.json.data|length == 0
+
+# - debug:
+#     msg: "Consul key needed result: {{ key_needs_created }}"
 
 - name: Generate a new consul encryption key
   community.docker.docker_container_exec:
@@ -18,7 +54,7 @@
     command: consul keygen
   register: consul_enc_key
   when:
-    - not key_needs_created.found or regenerate
+    - consul_keyring_results.json.Keys.key|length < 1 or regenerate
 
 - name: Add new encryption key to consul server config
   lineinfile:
