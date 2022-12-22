@@ -39,8 +39,8 @@
     msg: "Consul keyring regex result: {{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') }}."
     #\\\\n\\s(?P<key>here),'\\g<key>')
 
-- debug:
-    msg: "existing_consul_enc_key: {{ existing_consul_enc_key }}"
+# - debug:
+#     msg: "existing_consul_enc_key: {{ existing_consul_enc_key }}"
 
 #regex_search('\(LAN\):\\\\n\s(?P<key>.*)\s\[','\\g<key>')
 # - debug:
@@ -74,11 +74,11 @@
     command: consul keygen
   register: new_consul_enc_key_result
   when:
-    - existing_consul_enc_key | length < 1 or regenerate
+    - (existing_consul_enc_key is defined and existing_consul_enc_key | length < 1) or regenerate
     #- consul_keyring_results.json.Keys.key|length < 1 or regenerate
 
 - set_fact:
-    consul_enc_key_value: "{{ (existing_consul_enc_key | length < 1) | ternary(new_consul_enc_key_result.stdout, existing_consul_enc_key) }}"
+    consul_enc_key_value: "{{ (existing_consul_enc_key is defined and existing_consul_enc_key | length < 1) | ternary(new_consul_enc_key_result.stdout, existing_consul_enc_key) }}"
 
 - name: Add new encryption key to consul server config
   lineinfile:
