@@ -85,7 +85,7 @@
   #notify: Restart consul #even though in a loop, will only result in one restart (handler takes care of restating all containers)
   when:
     #- not key_needs_created.found or regenerate
-    - consul_enc_key | length < 1
+    - consul_enc_key | length > 1
     #- consul_enc_key is defined
   loop: "{{consul_servers}}"
 
@@ -113,7 +113,7 @@
   register: vault_consul_key_added
   #notify: Restart consul #even though in a loop, will only result in one restart (handler takes care of restating all containers)
   when:
-    - consul_enc_key | length < 1
+    - consul_enc_key | length > 1
     # - not client_key_needs_created.found or regenerate
     # - consul_enc_key is defined
   with_dict: "{{vault_servers}}"
