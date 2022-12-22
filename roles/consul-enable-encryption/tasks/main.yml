@@ -20,8 +20,13 @@
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
     command: consul keyring -list
-  register: "{{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') }}"
+  register: consul_keyring_results
 
+- set_fact:
+    consul_enc_key: "{{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') | first }}"
+  # when:
+  #   - consul_keyring_results is defined
+  #   - consul_keyring_results | length > 0
   #{{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
 # => ['1', '42']
 
@@ -33,8 +38,8 @@
     msg: "Consul keyring regex result: {{ consul_keyring_results | regex_search('\\(LAN\\):(\\\\n)+(\\s)*(?P<key>.*?)\\s\\[', '\\g<key>') }}."
     #\\\\n\\s(?P<key>here),'\\g<key>')
 #regex_search('\(LAN\):\\\\n\s(?P<key>.*)\s\[','\\g<key>')
-- debug:
-    msg: "Consul keyring result: {{ consul_keyring_results.json.Keys.key }}"
+# - debug:
+#     msg: "Consul keyring result: {{ consul_keyring_results.json.Keys.key }}"
 
 # - name: Enable audit to file/disk
 #   uri:
@@ -64,7 +69,8 @@
     command: consul keygen
   register: consul_enc_key
   when:
-    - consul_keyring_results.json.Keys.key|length < 1 or regenerate
+    - consul_keyring_results | length < 1 or regenerate
+    #- consul_keyring_results.json.Keys.key|length < 1 or regenerate
 
 - name: Add new encryption key to consul server config
   lineinfile:
