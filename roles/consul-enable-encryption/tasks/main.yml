@@ -22,11 +22,14 @@
     command: consul keyring -list
   register: consul_keyring_results
 
+  {{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
+# => ['1', '42']
+
 - debug:
     msg: "Consul keyring result: {{ consul_keyring_results }}"
 
 - debug:
-    msg: "Consul keyring result: {{ consul_keyring_results.json.Keys }}"
+    msg: "Consul keyring result: {{ consul_keyring_results | regex_search('\(LAN\):\\\\n\s(?P<key>.*)\s\[','\\g<key>') }}"
 
 - debug:
     msg: "Consul keyring result: {{ consul_keyring_results.json.Keys.key }}"
