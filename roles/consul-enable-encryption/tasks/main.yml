@@ -29,7 +29,7 @@
     msg: "Consul keyring result: {{ consul_keyring_results }}"
 
 - debug:
-    msg: "Consul keyring result: {{ consul_keyring_results | regex_search('(?P<key>here)','\\g<key>') }}"
+    msg: "Consul keyring result: {{ consul_keyring_results | regex_search('\(LAN\):(?P<key>here)','\\g<key>') }}"
 #regex_search('\(LAN\):\\\\n\s(?P<key>.*)\s\[','\\g<key>')
 - debug:
     msg: "Consul keyring result: {{ consul_keyring_results.json.Keys.key }}"
