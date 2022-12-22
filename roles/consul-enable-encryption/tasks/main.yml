@@ -36,7 +36,7 @@
 - name: Check if vault consul client encryption key is already defined
   lineinfile:
     state: absent
-    path: "{{ base_vault_dir }}/{{ lookup('dict', vault_servers)[0] }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
+    path: "{{ base_vault_dir }}/{{ lookup('dict', vault_servers)[0].key }}/config/consul.hcl" #files are all managed together so only check the first and use the result for all
     regexp: "^encrypt\\s*=\\s*"
   check_mode: true
   #changed_when: false # This just makes things look prettier in the logs
@@ -46,7 +46,7 @@
     msg: "Consul client key needed result: {{ client_key_needs_created }}."
 
 - debug:
-    msg: "Lookup value: {{ lookup('dict', vault_servers)[0] }}"
+    msg: "Lookup value: {{ lookup('dict', vault_servers)[0].key }}"
 
 - name: Add new encryption key to vault consul client config
   lineinfile:
