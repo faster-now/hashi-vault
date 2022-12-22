@@ -20,7 +20,7 @@
   community.docker.docker_container_exec:
     container: "{{ consul_servers[0] }}"
     command: consul keyring -list
-    ignore_errors: true #an error is returned when encryption is not set, simply ignore
+  ignore_errors: true #an error is returned when encryption is not set, simply ignore
   register: consul_keyring_results
 
 - set_fact:
