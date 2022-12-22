@@ -116,7 +116,7 @@
     body:
       type: file
       options:
-        file_path: "{{ vault_audit_dir }}/audit.log"
+        file_path: "{{ vault_container_audit_dir }}/audit.log"
     body_format: json
     method: PUT
     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
