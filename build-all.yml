@@ -1,3 +1,3 @@
 ---
-- import_playbook: build_consul_servers.yml
-- import_playbook: build_vault_servers.yml
+- import_playbook: build-consul-servers.yml
+- import_playbook: build-vault-servers.yml
