@@ -78,7 +78,7 @@
     #- consul_keyring_results.json.Keys.key|length < 1 or regenerate
 
 - set_fact:
-    consul_enc_key_value: "{{ (existing_consul_enc_key is defined and existing_consul_enc_key | length < 1) | ternary(new_consul_enc_key_result.stdout, existing_consul_enc_key) }}"
+    consul_enc_key_value: "{{ (existing_consul_enc_key is defined and existing_consul_enc_key | length > 1) | ternary(existing_consul_enc_key, new_consul_enc_key_result.stdout) }}"
 
 - name: Add new encryption key to consul server config
   lineinfile:
