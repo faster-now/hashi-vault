@@ -15,7 +15,7 @@
   register: vault_health_response
   delay: 5 #every 5 seconds
   retries: 12 #12*5 = 1 minutes
-  until: ('status' in result) and (result.status != -1)
+  until: ('status' in vault_health_response) and (vault_health_response.status != -1)
 
 
 - block:
