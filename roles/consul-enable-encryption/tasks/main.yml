@@ -22,7 +22,7 @@
     command: consul keyring -list
   register: consul_keyring_results
 
-  {{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
+  #{{ 'server1/database42' | regex_search('server([0-9]+)/database([0-9]+)', '\\1', '\\2') }}
 # => ['1', '42']
 
 - debug:
