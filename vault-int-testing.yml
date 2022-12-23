@@ -21,6 +21,7 @@
         # auth_method: userpass
         # username: user
         # password: '{{ passwd }}'
+        token: s.made-up
       register: health
 
     - name: Display the secret data
