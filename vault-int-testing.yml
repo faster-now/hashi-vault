@@ -46,7 +46,7 @@
     - set_fact:
         ishere: true
       when:
-        - "'pki/' in mount_list_result.stdout"
+        - "'pki/' in mount_list_result.msg"
 
     - name: Display the root data
       ansible.builtin.debug:
