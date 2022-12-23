@@ -45,7 +45,7 @@
 
     - name: Display the root data
       ansible.builtin.debug:
-        msg: "{{ mount_list_result.data.data['pki/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
+        msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
 
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
@@ -56,14 +56,14 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - mount_list_result.json.msg.pki/
+        - not mount_list_result.data.data['pki/'] is defined
 
-    - name: Configure the Root CA
-      community.hashi_vault.vault_write:
-        url: "{{ vault_url }}"
-        path: sys/mounts/pki/tune
-        data:
-          max_lease_ttl: 87600h
-        token: "{{ token }}"
-        token_validate: false
+    # - name: Configure the Root CA
+    #   community.hashi_vault.vault_write:
+    #     url: "{{ vault_url }}"
+    #     path: sys/mounts/pki/tune
+    #     data:
+    #       max_lease_ttl: 87600h
+    #     token: "{{ token }}"
+    #     token_validate: false
 
