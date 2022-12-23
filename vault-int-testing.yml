@@ -69,12 +69,12 @@
       when:
         - not pki_already_exists
 
-    # - name: Configure the Root CA
-    #   community.hashi_vault.vault_write:
-    #     url: "{{ vault_url }}"
-    #     path: sys/mounts/pki/tune
-    #     data:
-    #       max_lease_ttl: 87600h
-    #     token: "{{ token }}"
-    #     token_validate: false
+    - name: Configure the Root CA
+      community.hashi_vault.vault_write:
+        url: "{{ vault_url }}"
+        path: sys/mounts/pki/tune
+        data:
+          max_lease_ttl: 87600h
+        token: "{{ token }}"
+        token_validate: false
 
