@@ -5,6 +5,7 @@
     token: needs-supplied-at-runtime
     docker_network: vault_net
     user: azureuser
+    vault_url: http://127.0.0.1:8200
     vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
       vault-a: 8200
       vault-b: 8800
@@ -17,7 +18,7 @@
 
     - name: Test vault read health
       community.hashi_vault.vault_read:
-        url: http://127.0.0.1:8200
+        url: "{{ vault_url }}"
         path: sys/health
         # auth_method: userpass
         # username: user
@@ -29,3 +30,29 @@
     - name: Display the secret data
       ansible.builtin.debug:
         msg: "{{ health }}"
+
+    - name: Create Root CA for issuing consul and vault TLS certs
+      community.hashi_vault.vault_read:
+        url: "{{ vault_url }}"
+        path: sys/mounts/pki
+        data:
+          type: pki
+        token: "{{ token }}"
+        token_validate: false
+
+    - name: Configure the Root CA
+      community.hashi_vault.vault_read:
+        url: "{{ vault_url }}"
+        path: sys/mounts/pki/tune
+        data:
+          max_lease_ttl: 3650d
+        token: "{{ token }}"
+        token_validate: false
+
+
+
+
+    curl --header "X-Vault-Token: $VAULT_TOKEN" \
+   --request POST \
+   --data '{"type":"pki"}' \
+   $VAULT_ADDR/v1/
