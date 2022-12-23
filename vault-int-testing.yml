@@ -23,6 +23,7 @@
         # username: user
         # password: '{{ passwd }}'
         token: "{{ token }}"
+        token_validate: false
       register: health
 
     - name: Display the secret data
