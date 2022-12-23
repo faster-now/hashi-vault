@@ -46,8 +46,8 @@
     - set_fact:
         ishere: true
       when:
-        - "'pkit' in mount_list_result"
-        
+        - "'pki/' in mount_list_result"
+
     - name: Display the root data
       ansible.builtin.debug:
         #msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
