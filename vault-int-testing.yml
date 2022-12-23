@@ -27,7 +27,7 @@
         token_validate: false
       register: health
 
-    - name: Display the secret data
+    - name: Display the health data
       ansible.builtin.debug:
         msg: "{{ health }}"
 
@@ -44,9 +44,12 @@
         msg: "{{ mount_list_result }}"
 
     - set_fact:
+        jsonasstring: "{{ mount_list_result | string }}"
+
+    - set_fact:
         ishere: true
       when:
-        - "'pki/' in mount_list_result.msg"
+        - "'pki/' in jsonasstring"
 
     - name: Display the root data
       ansible.builtin.debug:
