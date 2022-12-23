@@ -45,7 +45,7 @@
 
     - name: Display the root data
       ansible.builtin.debug:
-        msg: "{{ mount_list_result.msg.data.data['pki/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
+        msg: "{{ mount_list_result.data.data['pki/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
 
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
