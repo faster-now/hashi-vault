@@ -49,7 +49,7 @@
     - set_fact:
         ishere: true
       when:
-        - "'pki/' in jsonasstring"
+        - "'pkit/' in jsonasstring"
 
     - name: Display the root data
       ansible.builtin.debug:
