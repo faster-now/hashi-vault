@@ -15,15 +15,6 @@
   tasks:
 
     - name: Test vault read health
-      file:
-        path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-        state: directory
-        owner: "{{user}}"
-        group: "{{user}}"
-        mode: 0775
-      with_dict: "{{ vault_servers }}"
-
-    - name: Test vault read health
       community.hashi_vault.vault_read:
         url: http://127.0.0.1:8200
         path: sys/health
