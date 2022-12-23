@@ -45,7 +45,7 @@
         url: "{{ vault_url }}"
         path: sys/mounts/pki/tune
         data:
-          max_lease_ttl: 3650d
+          max_lease_ttl: 87600h
         token: "{{ token }}"
         token_validate: false
 
