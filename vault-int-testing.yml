@@ -49,7 +49,7 @@
     - set_fact:
         pki_already_exists: true
       when:
-        - "'pki/' in (mount_list_result | string)"
+        - "'pkit/' in (mount_list_result | string)"
 
     - name: Display the root exists result
       ansible.builtin.debug:
