@@ -88,7 +88,7 @@
           ttl: 87600h
         token: "{{ token }}"
         token_validate: false
-        register: root_create_result
+      register: root_create_result
 
 
     - name: Display the root cert
