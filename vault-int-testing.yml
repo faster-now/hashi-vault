@@ -43,10 +43,15 @@
       ansible.builtin.debug:
         msg: "{{ mount_list_result }}"
 
+    - set_fact:
+        ishere: true
+      when: 'pkit' in mount_list_result
+        - 
     - name: Display the root data
       ansible.builtin.debug:
         #msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
-        msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
+        #msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
+        msg: "result: {{ ishere }}"
 
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
@@ -57,7 +62,7 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - not mount_list_result.data.data['pki/'] is defined
+        - not mount_list_result.data.data['pkit/'] is defined
 
     # - name: Configure the Root CA
     #   community.hashi_vault.vault_write:
