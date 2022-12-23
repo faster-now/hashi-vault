@@ -1,0 +1,37 @@
+---
+
+- hosts: all
+  vars:
+    docker_network: vault_net
+    user: azureuser
+    vault_servers: #use dict so a port number can be specified for each vault server to facilitate running multiple containers on a single host
+      vault-a: 8200
+      vault-b: 8800
+    vault_containers: #use to create and start containers on limited resource host (free tier on cloud providers cant cope with 5 containers)
+      vault-a: 8200
+  gather_facts: no
+  remote_user: "{{user}}"
+  become: no
+  tasks:
+
+    - name: Test vault read health
+      file:
+        path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+        state: directory
+        owner: "{{user}}"
+        group: "{{user}}"
+        mode: 0775
+      with_dict: "{{ vault_servers }}"
+
+    - name: Test vault read health
+      community.hashi_vault.vault_read:
+        url: http://127.0.0.1:8200
+        path: sys/health
+        # auth_method: userpass
+        # username: user
+        # password: '{{ passwd }}'
+      register: health
+
+    - name: Display the secret data
+      ansible.builtin.debug:
+        msg: "{{ health }}"
