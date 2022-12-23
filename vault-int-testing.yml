@@ -34,7 +34,7 @@
     - name: Check if Root CA needs created
       community.hashi_vault.vault_read:
         url: "{{ vault_url }}"
-        path: sys/mounts/pki
+        path: pki/issuers
         token: "{{ token }}"
         token_validate: false
       register: root_exists
