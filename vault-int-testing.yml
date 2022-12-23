@@ -31,6 +31,18 @@
       ansible.builtin.debug:
         msg: "{{ health }}"
 
+    - name: Check if Root CA needs created
+      community.hashi_vault.vault_read:
+        url: "{{ vault_url }}"
+        path: sys/mounts/pki
+        token: "{{ token }}"
+        token_validate: false
+      register: root_exists
+
+    - name: Display the root data
+      ansible.builtin.debug:
+        msg: "{{ root_exists }}"
+
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
         url: "{{ vault_url }}"
