@@ -39,23 +39,23 @@
         token_validate: false
       register: mount_list_result
 
-    - name: Display the root data
-      ansible.builtin.debug:
-        msg: "{{ mount_list_result }}"
+    # - name: Display the root data
+    #   ansible.builtin.debug:
+    #     msg: "{{ mount_list_result }}"
+
+    # - set_fact:
+    #     jsonasstring: "{{ mount_list_result | string }}"
 
     - set_fact:
-        jsonasstring: "{{ mount_list_result | string }}"
-
-    - set_fact:
-        ishere: true
+        pki_already_exists: true
       when:
-        - "'pkit/' in jsonasstring"
+        - "'pki/' in (mount_list_result | string)"
 
-    - name: Display the root data
+    - name: Display the root exists result
       ansible.builtin.debug:
         #msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
         #msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
-        msg: "result: {{ ishere }}"
+        msg: "result: {{ pki_already_exists }}"
 
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
