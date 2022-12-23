@@ -49,10 +49,3 @@
         token: "{{ token }}"
         token_validate: false
 
-
-
-
-    curl --header "X-Vault-Token: $VAULT_TOKEN" \
-   --request POST \
-   --data '{"type":"pki"}' \
-   $VAULT_ADDR/v1/
