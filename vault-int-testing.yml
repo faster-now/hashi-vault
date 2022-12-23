@@ -78,3 +78,19 @@
         token: "{{ token }}"
         token_validate: false
 
+    - name: Generate the Root CA certificate
+      community.hashi_vault.vault_write:
+        url: "{{ vault_url }}"
+        path: pki/root/generate/internal
+        data:
+          common_name: vaultca
+          issuer_name: vaultca
+          ttl: 87600h
+        token: "{{ token }}"
+        token_validate: false
+        register: root_create_result
+
+
+    - name: Display the root cert
+      ansible.builtin.debug:
+        msg: "{{ root_create_result }}"
