@@ -96,6 +96,10 @@
   ignore_errors: true
   register: ca_cert_result
 
+- name: Issuing CA cert retrieval result
+  ansible.builtin.debug:
+    msg: "{{ ca_cert_result }}"
+
 - name: Generate the Issuing CA CSR
   community.hashi_vault.vault_write:
     url: "{{ vault_url }}"
