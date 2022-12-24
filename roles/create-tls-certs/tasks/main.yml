@@ -5,6 +5,7 @@
   vars:
     cert_file: "{{ base_consul_dir }}/{{ item }}/config/consul_cert.pem"
     key_file: "{{ base_consul_dir }}/{{ item }}/config/consul_key.pem"
+    alt_names: "{{ item }},server.dc1.consul"
   loop: "{{ consul_servers }}"
 
   #TODO same again for Vault servers (Vault & Consul certs)

@@ -6,7 +6,7 @@
     path: pki_int/issue/leaf_certs
     data:
       common_name: "{{ item }}"
-      alt_names: "{{ item }}"
+      alt_names: "{{ alt_names }}"
       ttl: "{{ cert_lifetime }}"
     token: "{{ vault_token }}"
     token_validate: false
