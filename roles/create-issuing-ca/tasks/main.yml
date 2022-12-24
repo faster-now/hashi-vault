@@ -94,11 +94,11 @@
     token: "{{ vault_token }}"
     token_validate: false
   ignore_errors: true
-  register: ca_cert_result
+  register: ca_cert_exists_result
 
 - name: Issuing CA cert retrieval result
   ansible.builtin.debug:
-    msg: "{{ ca_cert_result }}"
+    msg: "{{ ca_cert_exists_result }}"
 
 - name: Generate the Issuing CA CSR
   community.hashi_vault.vault_write:
@@ -113,11 +113,31 @@
   register: ca_csr_result
   changed_when: "'-----BEGIN' in (ca_csr_result | string)"
   when:
-    - ca_cert_result is not defined or ca_cert_result.failed
+    - ca_cert_exists_result is not defined or ca_cert_exists_result.failed
 
 - name: CSR result
   ansible.builtin.debug:
     msg: "{{ ca_csr_result }}"
+
+- name: Sign the CSR to create the Intermediate CA
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: pki/root/sign-intermediate
+    data:
+      csr: "{{ ca_csr_result.data.data.csr }}"
+      format: pem_bundle
+      ttl: "{{ ca_lifetime }}"
+    token: "{{ vault_token }}"
+    token_validate: false
+  register: ca_cert_result
+  changed_when: "'-----BEGIN' in (ca_cert_result | string)"
+  when:
+    - ca_csr_result is defined
+    - ca_csr_result.changed
+
+- name: Issuing CA cert result
+  ansible.builtin.debug:
+    msg: "{{ ca_cert_result }}"
 
 # - name: Sign the CSR to create the Intermediate CA
 #   community.hashi_vault.vault_write:
@@ -134,7 +154,7 @@
 
 # - name: Write Intermediate CSR to file
 #   copy:
-#     content: "{{ ca_cert_result..data.data.csr }}"
+#     content: "{{ ca_csr_result.data.data.csr }}"
 #     dest: "{{ issuing_ca_file | dirname}}/issuing.csr"
 #   when:
 #     - "'-----BEGIN' in (ca_cert_result | string)"
