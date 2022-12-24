@@ -1,0 +1,177 @@
+---
+
+- name: Create parent folder to store the certs
+  file:
+    path: "{{ issuing_ca_file | dirname }}"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode: 0775
+
+# - name: Test vault read health
+#   community.hashi_vault.vault_read:
+#     url: "{{ vault_url }}"
+#     path: sys/health
+#     # auth_method: userpass
+#     # username: user
+#     # password: '{{ passwd }}'
+#     token: "{{ vault_token }}"
+#     token_validate: false
+#   register: health
+
+# - name: Display the health data
+#   ansible.builtin.debug:
+#     msg: "{{ health }}"
+
+- name: Check if Issuing CA needs created
+  community.hashi_vault.vault_read:
+    url: "{{ vault_url }}"
+    path: sys/mounts
+    token: "{{ vault_token }}"
+    token_validate: false
+  register: mount_list_result
+
+# - name: Display the root data
+#   ansible.builtin.debug:
+#     msg: "{{ mount_list_result }}"
+
+# - set_fact:
+#     jsonasstring: "{{ mount_list_result | string }}"
+
+# - name: Root CA needed result found
+#   ansible.builtin.set_fact:
+#     pki_already_exists: true
+#   when:
+#     - "'pki/' in (mount_list_result | string)"
+
+# - name: Display the root exists result
+#   ansible.builtin.debug:
+#     #msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
+#     #msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
+#     msg: "result: {{ pki_already_exists }}"
+
+    #TODO check if root ca already generated (e.g, get list of certs)
+
+- name: Create Issuing CA for issuing consul and vault TLS certs
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: sys/mounts/pki_int
+    data:
+      type: pki
+    token: "{{ vault_token }}"
+    token_validate: false
+  when:
+    - "not 'pki_int/' in (mount_list_result | string)"
+    #- not pki_already_exists
+
+- name: Check if Issuing CA needs tuned
+  community.hashi_vault.vault_read:
+    url: "{{ vault_url }}"
+    path: sys/mounts/pki_int/tune
+    token: "{{ vault_token }}"
+    token_validate: false
+  register: needs_tuned_result
+
+# - name: Needs tuned result
+#   ansible.builtin.debug:
+#     msg: "{{ needs_tuned_result }}"
+
+- name: Configure the Issuing CA
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: sys/mounts/pki/tune
+    data:
+      max_lease_ttl: "{{ ca_lifetime }}"
+    token: "{{ vault_token }}"
+    token_validate: false
+  when:
+    - needs_tuned_result.data.data.max_lease_ttl != ca_lifetime
+
+# - name: Check if Root CA certificate is generated
+#   community.hashi_vault.vault_read:
+#     url: "{{ vault_url }}"
+#     path: "pki/issuers?list=true"
+#     token: "{{ vault_token }}"
+#     token_validate: false
+#   register: root_ca_cert_result
+- name: Generate the Issuing CA CSR
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: pki_int/intermediate/generate/internal
+    data:
+      common_name: "{{ issuing_ca_name }}"
+      issuer_name: "{{ issuing_ca_name }}"
+      ttl: "{{ ca_lifetime }}"
+    token: "{{ vault_token }}"
+    token_validate: false
+  register: ca_csr_result
+  changed_when: "'-----BEGIN' in (ca_csr_result | string)"
+
+- name: CSR result
+  ansible.builtin.debug:
+    msg: "{{ ca_csr_result }}"
+
+# - name: Sign the CSR to create the Intermediate CA
+#   community.hashi_vault.vault_write:
+#       url: "{{ vault_url }}"
+#       path: pki/root/sign-intermediate
+#       data:
+#         csr: "{{ ca_csr_result.data.csr }}"
+#         issuer_name: "{{ issuing_ca_name }}"
+#         ttl: "{{ ca_lifetime }}"
+#       token: "{{ vault_token }}"
+#       token_validate: false
+#     register: ca_cert_result
+#     changed_when: "'-----BEGIN' in (ca_cert_result | string)"
+
+# - name: Write Intermediate CSR to file
+#   copy:
+#     content: "{{ ca_cert_result.data.csr }}"
+#     dest: "{{ issuing_ca_file | dirname}}/issuing.csr"
+#   when:
+#     - "'-----BEGIN' in (ca_cert_result | string)"
+
+# # - name: Check if the role exists
+# #   community.hashi_vault.vault_read:
+# #     url: "{{ vault_url }}"
+# #     path: "pki/roles/{{ issuing_ca_role }}"
+# #     token: "{{ vault_token }}"
+# #     token_validate: false
+# #   register: roles_list_result
+
+# # - name: roles list result
+# #   ansible.builtin.debug:
+# #     msg: "{{ roles_list_result }}"
+
+# - name: Create the role for the Root CA
+#   community.hashi_vault.vault_write:
+#     url: "{{ vault_url }}"
+#     path: pki/roles/{{ issuing_ca_role }}
+#     data:
+#       allow_any_name: true
+#       issuer_ref: "{{ issuing_ca_name }}"
+#       ttl: "{{ ca_lifetime }}"
+#     token: "{{ vault_token }}"
+#     token_validate: false
+  
+# - name: Configure the Root CA URLs
+#   community.hashi_vault.vault_write:
+#     url: "{{ vault_url }}"
+#     path: pki/config/urls
+#     data:
+#       issuing_certificates: "{{ vault_url }}/v1/pki/ca"
+#       crl_distribution_points: "{{ vault_url }}/v1/pki/crl"
+#     token: "{{ vault_token }}"
+#     token_validate: false
+
+  
+
+# #   - name: Display the result
+# #     ansible.builtin.debug:
+# #       msg: "{{ root_create_result }}"
+
+# #   - name: Display the root cert
+# #     ansible.builtin.debug:
+# #       msg: "{{ root_create_result.data.data.issuing_ca }}"
+# # when:
+# #   - not pki_already_exists
