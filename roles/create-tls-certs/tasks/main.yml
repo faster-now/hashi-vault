@@ -5,7 +5,19 @@
   vars:
     cert_file: "{{ base_consul_dir }}/{{ item }}/config/consul_cert.pem"
     key_file: "{{ base_consul_dir }}/{{ item }}/config/consul_key.pem"
+    ca_file: "{{ base_consul_dir }}/{{ item }}/config/ca_cert.pem"
     alt_names: "{{ item }},server.dc1.consul"
+    cname: "{{ item }}"
   loop: "{{ consul_servers }}"
+
+- name: Create the consul certificates and private keys
+  include_tasks: create_certs.yml
+  vars:
+    cert_file: "{{ base_consul_dir }}/{{ item.key }}/config/consul_cert.pem"
+    key_file: "{{ base_consul_dir }}/{{ item.key }}/config/consul_key.pem"
+    ca_file: "{{ base_consul_dir }}/{{ item.key }}/config/ca_cert.pem"
+    alt_names: "{{ item.key }}-consul"
+    cname: "{{ item.key }}-consul"
+  with_dict: "{{ vault_servers }}"
 
   #TODO same again for Vault servers (Vault & Consul certs)
