@@ -124,16 +124,24 @@
         token_validate: false
       register: root_ca_cert_result
 
-    - name: root ca_cert_result
-      ansible.builtin.debug:
-        msg: "{{ root_ca_cert_result }}"
-
     - name: Write Root CA to file
       copy:
         content: "{{ root_ca_cert_result.data.data.certificate }}"
         dest: "{{ root_ca_file }}"
       when:
         - "'-----BEGIN' in (root_ca_cert_result | string)"
+
+    - name: Check if the role exists
+      community.hashi_vault.vault_read:
+        url: "{{ vault_url }}"
+        path: pki/roles?list=true
+        token: "{{ token }}"
+        token_validate: false
+      register: roles_list_result
+
+    - name: roles list result
+      ansible.builtin.debug:
+        msg: "{{ roles_list_result }}"
 
     # - block:
       
