@@ -139,6 +139,18 @@
   ansible.builtin.debug:
     msg: "{{ ca_cert_result }}"
 
+- name: Import the signed Intermediate CA certificate
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: pki_int/intermediate/set-signed
+    data:
+      certificate: "{{ ca_cert_result.data.data.certificate }}"
+    token: "{{ vault_token }}"
+    token_validate: false
+  when:
+    - ca_cert_result is defined
+    - ca_cert_result.changed
+
 # - name: Sign the CSR to create the Intermediate CA
 #   community.hashi_vault.vault_write:
 #       url: "{{ vault_url }}"
