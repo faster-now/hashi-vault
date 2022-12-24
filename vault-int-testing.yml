@@ -51,9 +51,9 @@
         token_validate: false
       register: mount_list_result
 
-    - name: Display the root data
-      ansible.builtin.debug:
-        msg: "{{ mount_list_result }}"
+    # - name: Display the root data
+    #   ansible.builtin.debug:
+    #     msg: "{{ mount_list_result }}"
 
     # - set_fact:
     #     jsonasstring: "{{ mount_list_result | string }}"
@@ -125,6 +125,7 @@
         token: "{{ token }}"
         token_validate: false
       register: root_ca_cert_result
+      changed_when: "'-----BEGIN' in (root_ca_cert_result | string)"
 
     - name: Write Root CA to file
       copy:
