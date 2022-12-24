@@ -13,6 +13,7 @@
       vault-a: 8200
     root_ca_file: ~/vault/certs/root_ca.cer
     ca_lifetime: 315360000 #10 years (in seconds)
+    root_ca_role: sub_creation
   gather_facts: no
   remote_user: "{{user}}"
   become: no
@@ -134,7 +135,7 @@
     - name: Check if the role exists
       community.hashi_vault.vault_read:
         url: "{{ vault_url }}"
-        path: 'pki/roles?list=true'
+        path: "pki/roles/{{ root_ca_role }}"
         token: "{{ token }}"
         token_validate: false
       register: roles_list_result
