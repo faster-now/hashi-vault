@@ -95,7 +95,7 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - needs_tune_result.json.data.data.max_lease_ttl != ca_lifetime
+        - needs_tune_result.data.data.max_lease_ttl != ca_lifetime
 
     # - block:
       
