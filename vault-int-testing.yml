@@ -11,6 +11,7 @@
       vault-b: 8800
     vault_containers: #use to create and start containers on limited resource host (free tier on cloud providers cant cope with 5 containers)
       vault-a: 8200
+    root_ca_name: vaultca root
     root_ca_file: ~/vault/certs/root_ca.cer
     ca_lifetime: 315360000 #10 years (in seconds)
     root_ca_role: sub_creation
@@ -118,8 +119,8 @@
         url: "{{ vault_url }}"
         path: pki/root/generate/internal
         data:
-          common_name: vaultca root
-          issuer_name: vaultca root
+          common_name: "{{ root_ca_name }}"
+          issuer_name: "{{ root_ca_name }}"
           ttl: "{{ ca_lifetime }}"
         token: "{{ token }}"
         token_validate: false
@@ -132,27 +133,40 @@
       when:
         - "'-----BEGIN' in (root_ca_cert_result | string)"
 
-    - name: Check if the role exists
-      community.hashi_vault.vault_read:
+    # - name: Check if the role exists
+    #   community.hashi_vault.vault_read:
+    #     url: "{{ vault_url }}"
+    #     path: "pki/roles/{{ root_ca_role }}"
+    #     token: "{{ token }}"
+    #     token_validate: false
+    #   register: roles_list_result
+
+    # - name: roles list result
+    #   ansible.builtin.debug:
+    #     msg: "{{ roles_list_result }}"
+
+    - name: Create the role for the Root CA
+      community.hashi_vault.vault_write:
         url: "{{ vault_url }}"
-        path: "pki/roles/{{ root_ca_role }}"
+        path: pki/roles/{{ root_ca_role }}
+        data:
+          allow_any_name: true
+          issuer_ref: "{{ root_ca_name }}"
+          ttl: "{{ ca_lifetime }}"
         token: "{{ token }}"
         token_validate: false
-      register: roles_list_result
-
-    - name: roles list result
-      ansible.builtin.debug:
-        msg: "{{ roles_list_result }}"
-
-    # - block:
       
-
+    - name: Configure the Root CA URLs
+      community.hashi_vault.vault_write:
+        url: "{{ vault_url }}"
+        path: pki/config/urls
+        data:
+          issuing_certificates: "{{ vault_url }}/v1/pki/ca"
+          crl_distribution_points: "{{ vault_url }}/v1/pki/crl"
+        token: "{{ token }}"
+        token_validate: false
 
       
-
-
-
-
 
     #   - name: Display the result
     #     ansible.builtin.debug:
