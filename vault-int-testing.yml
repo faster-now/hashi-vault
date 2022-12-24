@@ -11,25 +11,26 @@
       vault-b: 8800
     vault_containers: #use to create and start containers on limited resource host (free tier on cloud providers cant cope with 5 containers)
       vault-a: 8200
+    root_ca_file: ~vault/certs/root_ca.cer
   gather_facts: no
   remote_user: "{{user}}"
   become: no
   tasks:
 
-    - name: Test vault read health
-      community.hashi_vault.vault_read:
-        url: "{{ vault_url }}"
-        path: sys/health
-        # auth_method: userpass
-        # username: user
-        # password: '{{ passwd }}'
-        token: "{{ token }}"
-        token_validate: false
-      register: health
+    # - name: Test vault read health
+    #   community.hashi_vault.vault_read:
+    #     url: "{{ vault_url }}"
+    #     path: sys/health
+    #     # auth_method: userpass
+    #     # username: user
+    #     # password: '{{ passwd }}'
+    #     token: "{{ token }}"
+    #     token_validate: false
+    #   register: health
 
-    - name: Display the health data
-      ansible.builtin.debug:
-        msg: "{{ health }}"
+    # - name: Display the health data
+    #   ansible.builtin.debug:
+    #     msg: "{{ health }}"
 
     - name: Check if Root CA needs created
       community.hashi_vault.vault_read:
@@ -58,6 +59,8 @@
     #     #msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
     #     msg: "result: {{ pki_already_exists }}"
 
+        #TODO check if root ca already generated (e.g, get list of certs)
+    
     - name: Create Root CA for issuing consul and vault TLS certs
       community.hashi_vault.vault_write:
         url: "{{ vault_url }}"
@@ -69,28 +72,61 @@
       when:
         - not pki_already_exists
 
-    - name: Configure the Root CA
-      community.hashi_vault.vault_write:
+    - name: Check if Root CA needs tuned
+      community.hashi_vault.vault_read:
         url: "{{ vault_url }}"
         path: sys/mounts/pki/tune
-        data:
-          max_lease_ttl: 87600h
         token: "{{ token }}"
         token_validate: false
+      register: needs_tune_result
 
-    - name: Generate the Root CA certificate
-      community.hashi_vault.vault_write:
-        url: "{{ vault_url }}"
-        path: pki/root/generate/internal
-        data:
-          common_name: vaultca
-          issuer_name: vaultca
-          ttl: 87600h
-        token: "{{ token }}"
-        token_validate: false
-      register: root_create_result
-
-
-    - name: Display the root cert
+    - name: Needs tuned result
       ansible.builtin.debug:
-        msg: "{{ root_create_result }}"
+        msg: "{{ needs_tune_result }}"
+
+    # - block:
+      
+
+    #   - name: Configure the Root CA
+    #     community.hashi_vault.vault_write:
+    #       url: "{{ vault_url }}"
+    #       path: sys/mounts/pki/tune
+    #       data:
+    #         max_lease_ttl: 87600h
+    #       token: "{{ token }}"
+    #       token_validate: false
+
+    #   - name: Generate the Root CA certificate
+    #     community.hashi_vault.vault_write:
+    #       url: "{{ vault_url }}"
+    #       path: pki/root/generate/internal
+    #       data:
+    #         common_name: vaultca
+    #         issuer_name: vaultca
+    #         ttl: 87600h
+    #       token: "{{ token }}"
+    #       token_validate: false
+    #     register: 
+
+    #   - name: Create parent folder to store the certs
+    #     file:
+    #       path: "{{ root_ca_file | dirname }}"
+    #       state: directory
+    #       owner: "{{user}}"
+    #       group: "{{user}}"
+    #       mode: 0775
+
+    #   - name: Write Root CA to file
+    #     copy:
+    #       content: "{{ root_create_result.data.data.issuing_ca }}"
+    #       path: "{{ root_ca_file }}"
+
+    #   - name: Display the result
+    #     ansible.builtin.debug:
+    #       msg: "{{ root_create_result }}"
+
+    #   - name: Display the root cert
+    #     ansible.builtin.debug:
+    #       msg: "{{ root_create_result.data.data.issuing_ca }}"
+    # when:
+    #   - not pki_already_exists
