@@ -171,13 +171,13 @@
     - ca_cert_result.changed
 
 - name: Create Issuing CA role for leaf certificates
-    community.hashi_vault.vault_write:
-      url: "{{ vault_url }}"
-      path: pki_int/roles/leaf_certs
-      data:
-        allow_any_name: true
-      token: "{{ vault_token }}"
-      token_validate: false
+  community.hashi_vault.vault_write:
+    url: "{{ vault_url }}"
+    path: pki_int/roles/leaf_certs
+    data:
+      allow_any_name: true
+    token: "{{ vault_token }}"
+    token_validate: false
 
 
 
