@@ -80,11 +80,11 @@
         path: sys/mounts/pki/tune
         token: "{{ token }}"
         token_validate: false
-      register: needs_tune_result
+      register: needs_tuned_result
 
-    - name: Needs tuned result
-      ansible.builtin.debug:
-        msg: "{{ needs_tune_result }}"
+    # - name: Needs tuned result
+    #   ansible.builtin.debug:
+    #     msg: "{{ needs_tuned_result }}"
 
     - name: Configure the Root CA
       community.hashi_vault.vault_write:
@@ -95,7 +95,19 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - needs_tune_result.data.data.max_lease_ttl != ca_lifetime
+        - needs_tuned_result.data.data.max_lease_ttl != ca_lifetime
+
+    - name: Check if Root CA certificate is generated
+      community.hashi_vault.vault_read:
+        url: "{{ vault_url }}"
+        path: "pki/issuers?list=true"
+        token: "{{ token }}"
+        token_validate: false
+      register: root_ca_cert_result
+
+    - name: root ca_cert_result
+      ansible.builtin.debug:
+        msg: "{{ root_ca_cert_result }}"
 
     # - block:
       
