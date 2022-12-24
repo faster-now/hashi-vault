@@ -70,7 +70,7 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - not "'pki/' in (mount_list_result | string)"
+        - "not 'pki/' in (mount_list_result | string)"
         #- not pki_already_exists
 
     - name: Check if Root CA needs tuned
