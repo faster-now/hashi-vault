@@ -87,13 +87,15 @@
   when:
     - needs_tuned_result.data.data.max_lease_ttl != ca_lifetime
 
-# - name: Check if Root CA certificate is generated
-#   community.hashi_vault.vault_read:
-#     url: "{{ vault_url }}"
-#     path: "pki/issuers?list=true"
-#     token: "{{ vault_token }}"
-#     token_validate: false
-#   register: root_ca_cert_result
+- name: Check if Issuing CA certificate already exists
+  community.hashi_vault.vault_read:
+    url: "{{ vault_url }}"
+    path: pki_int/cert/ca
+    token: "{{ vault_token }}"
+    token_validate: false
+  ignore_errors: true
+  register: ca_cert_result
+
 - name: Generate the Issuing CA CSR
   community.hashi_vault.vault_write:
     url: "{{ vault_url }}"
@@ -106,6 +108,8 @@
     token_validate: false
   register: ca_csr_result
   changed_when: "'-----BEGIN' in (ca_csr_result | string)"
+  when:
+    - ca_cert_result is not defined
 
 - name: CSR result
   ansible.builtin.debug:
@@ -126,7 +130,7 @@
 
 # - name: Write Intermediate CSR to file
 #   copy:
-#     content: "{{ ca_cert_result.data.csr }}"
+#     content: "{{ ca_cert_result..data.data.csr }}"
 #     dest: "{{ issuing_ca_file | dirname}}/issuing.csr"
 #   when:
 #     - "'-----BEGIN' in (ca_cert_result | string)"
