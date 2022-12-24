@@ -11,7 +11,7 @@
       vault-b: 8800
     vault_containers: #use to create and start containers on limited resource host (free tier on cloud providers cant cope with 5 containers)
       vault-a: 8200
-    root_ca_file: ~vault/certs/root_ca.cer
+    root_ca_file: ~/vault/certs/root_ca.cer
     ca_lifetime: 315360000 #10 years (in seconds)
   gather_facts: no
   remote_user: "{{user}}"
@@ -130,7 +130,7 @@
 
     - name: Write Root CA to file
       copy:
-        content: "{{ root_create_result.data.data.issuing_ca }}"
+        content: "{{ root_ca_cert_result.data.data.certificate }}"
         path: "{{ root_ca_file }}"
       when:
         - "'-----BEGIN' in (root_ca_cert_result | string)"
