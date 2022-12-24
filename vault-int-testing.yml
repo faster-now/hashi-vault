@@ -134,7 +134,7 @@
     - name: Check if the role exists
       community.hashi_vault.vault_read:
         url: "{{ vault_url }}"
-        path: pki/roles?list=true
+        path: 'pki/roles\?list=true'
         token: "{{ token }}"
         token_validate: false
       register: roles_list_result
