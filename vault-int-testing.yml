@@ -47,11 +47,11 @@
     # - set_fact:
     #     jsonasstring: "{{ mount_list_result | string }}"
 
-    - name: Root CA needed result found
-      ansible.builtin.set_fact:
-        pki_already_exists: true
-      when:
-        - "'pki/' in (mount_list_result | string)"
+    # - name: Root CA needed result found
+    #   ansible.builtin.set_fact:
+    #     pki_already_exists: true
+    #   when:
+    #     - "'pki/' in (mount_list_result | string)"
 
     # - name: Display the root exists result
     #   ansible.builtin.debug:
@@ -70,7 +70,8 @@
         token: "{{ token }}"
         token_validate: false
       when:
-        - not pki_already_exists
+        - "'pki/' in (mount_list_result | string)"
+        #- not pki_already_exists
 
     - name: Check if Root CA needs tuned
       community.hashi_vault.vault_read:
