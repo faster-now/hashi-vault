@@ -131,7 +131,7 @@
     - name: Write Root CA to file
       copy:
         content: "{{ root_ca_cert_result.data.data.certificate }}"
-        path: "{{ root_ca_file }}"
+        dest: "{{ root_ca_file }}"
       when:
         - "'-----BEGIN' in (root_ca_cert_result | string)"
 
