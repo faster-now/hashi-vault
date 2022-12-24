@@ -139,7 +139,7 @@
   ansible.builtin.debug:
     msg: "{{ ca_cert_result }}"
 
-block:
+- block:
   - name: Import the signed Intermediate CA certificate
     community.hashi_vault.vault_write:
       url: "{{ vault_url }}"
