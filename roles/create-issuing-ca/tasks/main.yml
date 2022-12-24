@@ -139,37 +139,36 @@
   ansible.builtin.debug:
     msg: "{{ ca_cert_result }}"
 
-- name: Import the signed Intermediate CA certificate
-  community.hashi_vault.vault_write:
-    url: "{{ vault_url }}"
-    path: pki_int/intermediate/set-signed
-    data:
-      certificate: "{{ ca_cert_result.data.data.certificate }}"
-    token: "{{ vault_token }}"
-    token_validate: false
+block:
+  - name: Import the signed Intermediate CA certificate
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: pki_int/intermediate/set-signed
+      data:
+        certificate: "{{ ca_cert_result.data.data.certificate }}"
+      token: "{{ vault_token }}"
+      token_validate: false
+
+  # - name: Sign the CSR to create the Intermediate CA
+  #   community.hashi_vault.vault_write:
+  #       url: "{{ vault_url }}"
+  #       path: pki/root/sign-intermediate
+  #       data:
+  #         csr: "{{ ca_csr_result.data.csr }}"
+  #         issuer_name: "{{ issuing_ca_name }}"
+  #         ttl: "{{ ca_lifetime }}"
+  #       token: "{{ vault_token }}"
+  #       token_validate: false
+  #     register: ca_cert_result
+  #     changed_when: "'-----BEGIN' in (ca_cert_result | string)"
+
+  - name: Write Intermediate certificate to file
+    copy:
+      content: "{{ ca_cert_result.data.data.certificate }}"
+      dest: "{{ issuing_ca_file }}"
   when:
     - ca_cert_result is defined
     - ca_cert_result.changed
-
-# - name: Sign the CSR to create the Intermediate CA
-#   community.hashi_vault.vault_write:
-#       url: "{{ vault_url }}"
-#       path: pki/root/sign-intermediate
-#       data:
-#         csr: "{{ ca_csr_result.data.csr }}"
-#         issuer_name: "{{ issuing_ca_name }}"
-#         ttl: "{{ ca_lifetime }}"
-#       token: "{{ vault_token }}"
-#       token_validate: false
-#     register: ca_cert_result
-#     changed_when: "'-----BEGIN' in (ca_cert_result | string)"
-
-# - name: Write Intermediate CSR to file
-#   copy:
-#     content: "{{ ca_csr_result.data.data.csr }}"
-#     dest: "{{ issuing_ca_file | dirname}}/issuing.csr"
-#   when:
-#     - "'-----BEGIN' in (ca_cert_result | string)"
 
 # # - name: Check if the role exists
 # #   community.hashi_vault.vault_read:
