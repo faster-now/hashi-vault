@@ -113,7 +113,7 @@
   register: ca_csr_result
   changed_when: "'-----BEGIN' in (ca_csr_result | string)"
   when:
-    - ca_cert_result is not defined
+    - ca_cert_result is not defined or ca_cert_result.failed
 
 - name: CSR result
   ansible.builtin.debug:
