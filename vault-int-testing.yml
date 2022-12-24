@@ -12,6 +12,7 @@
     vault_containers: #use to create and start containers on limited resource host (free tier on cloud providers cant cope with 5 containers)
       vault-a: 8200
     root_ca_file: ~vault/certs/root_ca.cer
+    ca_lifetime: 315360000 #10 years (in seconds)
   gather_facts: no
   remote_user: "{{user}}"
   become: no
@@ -85,17 +86,20 @@
       ansible.builtin.debug:
         msg: "{{ needs_tune_result }}"
 
+    - name: Configure the Root CA
+      community.hashi_vault.vault_write:
+        url: "{{ vault_url }}"
+        path: sys/mounts/pki/tune
+        data:
+          max_lease_ttl: "{{ ca_lifetime }}"
+        token: "{{ token }}"
+        token_validate: false
+      when:
+        - needs_tune_result.json.data.data.max_lease_ttl != ca_lifetime
+
     # - block:
       
 
-    #   - name: Configure the Root CA
-    #     community.hashi_vault.vault_write:
-    #       url: "{{ vault_url }}"
-    #       path: sys/mounts/pki/tune
-    #       data:
-    #         max_lease_ttl: 87600h
-    #       token: "{{ token }}"
-    #       token_validate: false
 
     #   - name: Generate the Root CA certificate
     #     community.hashi_vault.vault_write:
