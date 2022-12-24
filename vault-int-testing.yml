@@ -18,6 +18,14 @@
   become: no
   tasks:
 
+    - name: Create parent folder to store the certs
+      file:
+        path: "{{ root_ca_file | dirname }}"
+        state: directory
+        owner: "{{user}}"
+        group: "{{user}}"
+        mode: 0775
+
     # - name: Test vault read health
     #   community.hashi_vault.vault_read:
     #     url: "{{ vault_url }}"
@@ -97,10 +105,21 @@
       when:
         - needs_tuned_result.data.data.max_lease_ttl != ca_lifetime
 
-    - name: Check if Root CA certificate is generated
-      community.hashi_vault.vault_read:
+    # - name: Check if Root CA certificate is generated
+    #   community.hashi_vault.vault_read:
+    #     url: "{{ vault_url }}"
+    #     path: "pki/issuers?list=true"
+    #     token: "{{ token }}"
+    #     token_validate: false
+    #   register: root_ca_cert_result
+    - name: Generate the Root CA certificate
+      community.hashi_vault.vault_write:
         url: "{{ vault_url }}"
-        path: "pki/issuers?list=true"
+        path: pki/root/generate/internal
+        data:
+          common_name: vaultca root
+          issuer_name: vaultca root
+          ttl: "{{ ca_lifetime }}"
         token: "{{ token }}"
         token_validate: false
       register: root_ca_cert_result
@@ -109,34 +128,22 @@
       ansible.builtin.debug:
         msg: "{{ root_ca_cert_result }}"
 
+    - name: Write Root CA to file
+      copy:
+        content: "{{ root_create_result.data.data.issuing_ca }}"
+        path: "{{ root_ca_file }}"
+      when:
+        - "'-----BEGIN' in (root_ca_cert_result | string)"
+
     # - block:
       
 
 
-    #   - name: Generate the Root CA certificate
-    #     community.hashi_vault.vault_write:
-    #       url: "{{ vault_url }}"
-    #       path: pki/root/generate/internal
-    #       data:
-    #         common_name: vaultca
-    #         issuer_name: vaultca
-    #         ttl: 87600h
-    #       token: "{{ token }}"
-    #       token_validate: false
-    #     register: 
+      
 
-    #   - name: Create parent folder to store the certs
-    #     file:
-    #       path: "{{ root_ca_file | dirname }}"
-    #       state: directory
-    #       owner: "{{user}}"
-    #       group: "{{user}}"
-    #       mode: 0775
 
-    #   - name: Write Root CA to file
-    #     copy:
-    #       content: "{{ root_create_result.data.data.issuing_ca }}"
-    #       path: "{{ root_ca_file }}"
+
+
 
     #   - name: Display the result
     #     ansible.builtin.debug:
