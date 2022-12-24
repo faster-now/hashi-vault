@@ -1,0 +1,35 @@
+---
+
+- block:
+  - name: Create TLS certificate
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: pki_int/issue/leaf_certs
+      data:
+        common_name: "{{ item }}"
+        alt_names: "{{ item }}"
+        ttl: "{{ cert_lifetime }}"
+      token: "{{ vault_token }}"
+      token_validate: false
+    register: consul_certs_and_keys
+
+  - name: Write consul certificate to file
+    copy:
+      content: "{{ consul_certs_and_keys.data.data.certificate }}"
+      dest: "{{ base_consul_dir }}/{{ item }}/config/server_cert.pem"
+
+  - name: Write consul private key to file
+    copy:
+      content: "{{ consul_certs_and_keys.data.data.private_key }}"
+      dest: "{{ base_consul_dir }}/{{ item }}/config/server_key.pem"
+
+  - name: Write ca cert to file
+    copy:
+      content: "{{ consul_certs_and_keys.data.data.issuing_ca }}"
+      dest: "{{ base_consul_dir }}/{{ item }}/config/ca_cert.pem"
+
+#TODO update config files then restart containers
+
+  loop: "{{ consul_servers }}"
+
+#TODO same again for Vault servers (Vault & Consul certs)
