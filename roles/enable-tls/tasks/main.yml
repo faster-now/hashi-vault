@@ -11,14 +11,14 @@
 - name: Update the vault consul client TLS configuration
   include_tasks: enable-tls-consul.yml
   vars:
-    config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.pem"
+    config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}-consul.hcl"
   with_dict: "{{ vault_servers }}"
   #notify: Restart Consul #even though in a loop, will only result in one restart
 
 - name: Update the vault consul client TLS configuration
   include_tasks: enable-tls-vault.yml
   vars:
-    config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.pem"
+    config_file: "{{ base_vault_dir }}/{{ item.key }}/config/{{ item.key }}.hcl"
   with_dict: "{{ vault_servers }}"
 
 # - name: Create the vault server certificates and private keys
