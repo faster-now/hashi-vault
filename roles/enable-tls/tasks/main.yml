@@ -15,54 +15,44 @@
   with_dict: "{{ vault_servers }}"
   #notify: Restart Consul #even though in a loop, will only result in one restart
 
-- name: Update the vault consul client TLS configuration
+- name: Update the vault TLS configuration
   include_tasks: enable-tls-vault.yml
   vars:
     config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
   with_dict: "{{ vault_servers }}"
 
-# - name: Create the vault server certificates and private keys
-#   include_tasks: create_certs.yml
-#   vars:
-#     cert_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault_cert.pem"
-#     key_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault_key.pem"
-#     ca_file: "{{ base_vault_dir }}/{{ item.key }}/config/ca_cert.pem"
-#     alt_names: "{{ item.key }}"
-#     cname: "{{ item.key }}"
-#   with_dict: "{{ vault_servers }}"
 
 
+- name: (Re)start consul docker containers
+  include_role:
+    name: consul-container-restart
+  vars:
+    container_name: "{{ consul_server }}"
+    consul_image_version: "v1"
+    consul_config_dir: "{{ base_consul_dir }}/{{ consul_server }}/config"
+    consul_storage_dir: "{{ base_consul_dir }}/{{ consul_server }}/consul-storage"
+    container_restart: yes
+  loop: "{{ consul_servers }}"
+  loop_control:
+    loop_var: consul_server
+  when:
+    - consul_key_added is defined and consul_key_added.changed
 
-# - name: (Re)start consul docker containers
-#   include_role:
-#     name: consul-container-restart
-#   vars:
-#     container_name: "{{ consul_server }}"
-#     consul_image_version: "v1"
-#     consul_config_dir: "{{ base_consul_dir }}/{{ consul_server }}/config"
-#     consul_storage_dir: "{{ base_consul_dir }}/{{ consul_server }}/consul-storage"
-#     container_restart: yes
-#   loop: "{{ consul_servers }}"
-#   loop_control:
-#     loop_var: consul_server
-#   when:
-#     - consul_key_added is defined and consul_key_added.changed
-
-# - name: (Re)start vault docker containers
-#   include_role:
-#     name: vault-container-restart
-#   vars:
-#     container_name: "{{ item.key }}"
-#     vault_image_version: "v1"
-#     host_port: "{{ item.value }}"
-#     container_port: "{{ item.value }}"
-#     vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
-#     vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
-#     consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-#     vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
-#     container_restart: yes
-#   with_dict: "{{ vault_containers }}"
-#   when:
-#     - vault_consul_key_added is defined and vault_consul_key_added.changed
+- name: (Re)start vault docker containers
+  include_role:
+    name: vault-container-restart
+  vars:
+    container_name: "{{ item.key }}"
+    vault_image_version: "v1"
+    host_port: "{{ item.value }}"
+    container_port: "{{ item.value }}"
+    vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
+    vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
+    consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+    vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
+    container_restart: yes
+  with_dict: "{{ vault_containers }}"
+  when:
+    - vault_consul_key_added is defined and vault_consul_key_added.changed
 
   #TODO same again for Vault servers (Vault & Consul certs)
