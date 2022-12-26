@@ -31,36 +31,38 @@
   ansible.builtin.debug:
     msg: "{{ vault_config_result }}"
 
-- name: (Re)start consul docker containers
-  include_role:
-    name: consul-container-restart
-  vars:
-    container_name: "{{ consul_server }}"
-    consul_image_version: "v1"
-    consul_config_dir: "{{ base_consul_dir }}/{{ consul_server }}/config"
-    consul_storage_dir: "{{ base_consul_dir }}/{{ consul_server }}/consul-storage"
-    container_restart: yes
-  loop: "{{ consul_servers }}"
-  loop_control:
-    loop_var: consul_server
-  when:
-    - consul_config_result.changed
+#TODO: Restart when condition below is not working using registered loop var
 
-- name: (Re)start vault docker containers
-  include_role:
-    name: vault-container-restart
-  vars:
-    container_name: "{{ item.key }}"
-    vault_image_version: "v1"
-    host_port: "{{ item.value }}"
-    container_port: "{{ item.value }}"
-    vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
-    vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
-    consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-    vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
-    container_restart: yes
-  with_dict: "{{ vault_containers }}"
-  when:
-    - vault_config_result.changed
+# - name: (Re)start consul docker containers
+#   include_role:
+#     name: consul-container-restart
+#   vars:
+#     container_name: "{{ consul_server }}"
+#     consul_image_version: "v1"
+#     consul_config_dir: "{{ base_consul_dir }}/{{ consul_server }}/config"
+#     consul_storage_dir: "{{ base_consul_dir }}/{{ consul_server }}/consul-storage"
+#     container_restart: yes
+#   loop: "{{ consul_servers }}"
+#   loop_control:
+#     loop_var: consul_server
+#   when:
+#     - consul_config_result.changed
+
+# - name: (Re)start vault docker containers
+#   include_role:
+#     name: vault-container-restart
+#   vars:
+#     container_name: "{{ item.key }}"
+#     vault_image_version: "v1"
+#     host_port: "{{ item.value }}"
+#     container_port: "{{ item.value }}"
+#     vault_config_consul_file: "{{ base_vault_dir }}/{{ item.key }}/config/consul.hcl"
+#     vault_config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
+#     consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+#     vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
+#     container_restart: yes
+#   with_dict: "{{ vault_containers }}"
+#   when:
+#     - vault_config_result.changed
 
   #TODO same again for Vault servers (Vault & Consul certs)
