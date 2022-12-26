@@ -7,7 +7,7 @@
     line: "{{ config_text.line }}"
     backrefs: true
   loop:
-    #- { regexp: '^#ca_file\s(.*?)$', line: 'ca_file  \1' }
+    - { regexp: '^#ca_file\s(.*?)$', line: 'ca_file  \1' }
     - { regexp: '^#cert_file\s(.*?)$', line: 'cert_file  \1' }
     - { regexp: '^#key_file\s(.*?)$', line: 'key_file  \1' }
     - { regexp: '^#verify_incoming\s(.*?)$', line: 'verify_incoming  \1' }
@@ -15,13 +15,6 @@
     - { regexp: '^#verify_server_hostname\s(.*?)$', line: 'verify_server_hostname  \1' }
   loop_control:
     loop_var: config_text
-
-- name: Set the consul CA config to use TLS
-  lineinfile:
-    dest: "{{ config_file }}"
-    regexp: '^#ca_file\s(?P<contents>.*?)$'
-    line: 'ca_file  \g<contents>'
-    backrefs: true
 
 # - name: Update consul server configuration to use the certificate and key files
 #   lineinfile:
