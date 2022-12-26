@@ -14,12 +14,14 @@
     - { regexp: '^#verify_server_hostname(.*?)$', line: 'verify_server_hostname  \1' }
   loop_control:
     loop_var: config_text
+  backrefs: true
 
 - name: Set the consul CA config to use TLS
   lineinfile:
     dest: "{{ config_file }}"
-    regexp: '^#ca_file\\s(?P<contents>.*?)$'
-    line: 'ca_file  \\g<contents>'
+    regexp: '^#ca_file\s(?P<contents>.*?)$'
+    line: 'ca_file  \g<contents>'
+    backrefs: true
 
 # - name: Update consul server configuration to use the certificate and key files
 #   lineinfile:
