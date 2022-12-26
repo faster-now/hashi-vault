@@ -1,5 +1,3 @@
 ---
-- include_role: 
-    name: install-dependencies
 - import_playbook: build-consul-servers.yml
 - import_playbook: build-vault-servers.yml
