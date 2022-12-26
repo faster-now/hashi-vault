@@ -6,12 +6,12 @@
     regexp: "{{ config_text.regexp }}"
     line: "{{ config_text.line }}"
   loop:
-    - { regexp: '^#ca_file\s(.*?)$', line: 'ca_file  \\1' }
-    - { regexp: '^#cert_file\s(.*?)$', line: 'cert_file  \\1' }
-    - { regexp: '^#key_file\s(.*?)$', line: 'key_file  \\1' }
-    - { regexp: '^#verify_incoming(.*?)$', line: 'verify_incoming  \\1' }
-    - { regexp: '^#verify_outgoing(.*?)$', line: 'verify_outgoing  \\1' }
-    - { regexp: '^#verify_server_hostname(.*?)$', line: 'verify_server_hostname  \\1' }
+    - { regexp: '^#ca_file\s(.*?)$', line: 'ca_file  \1' }
+    - { regexp: '^#cert_file\s(.*?)$', line: 'cert_file  \1' }
+    - { regexp: '^#key_file\s(.*?)$', line: 'key_file  \1' }
+    - { regexp: '^#verify_incoming(.*?)$', line: 'verify_incoming  \1' }
+    - { regexp: '^#verify_outgoing(.*?)$', line: 'verify_outgoing  \1' }
+    - { regexp: '^#verify_server_hostname(.*?)$', line: 'verify_server_hostname  \1' }
   loop_control:
     loop_var: config_text
 
