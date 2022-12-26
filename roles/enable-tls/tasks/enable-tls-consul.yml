@@ -19,7 +19,7 @@
   lineinfile:
     dest: "{{ config_file}}"
     regexp: '^#ca_file\s(.*?)$'
-    line: 'ca_file  \1'
+    line: 'ca_file  \g<1>'
 
 # - name: Update consul server configuration to use the certificate and key files
 #   lineinfile:
