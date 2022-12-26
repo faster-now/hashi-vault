@@ -2,7 +2,7 @@
 
 - name: Set the consul config to use TLS
   lineinfile:
-    dest: "{{ config_file}}"
+    dest: "{{ config_file }}"
     regexp: "{{ config_text.regexp }}"
     line: "{{ config_text.line }}"
   loop:
@@ -17,9 +17,9 @@
 
 - name: Set the consul CA config to use TLS
   lineinfile:
-    dest: "{{ config_file}}"
-    regexp: '^#ca_file\s(.*?)$'
-    line: 'ca_file  \g<1>'
+    dest: "{{ config_file }}"
+    regexp: '^#ca_file\\s(?P<contents>.*?)$'
+    line: 'ca_file  \\g<contents>'
 
 # - name: Update consul server configuration to use the certificate and key files
 #   lineinfile:
