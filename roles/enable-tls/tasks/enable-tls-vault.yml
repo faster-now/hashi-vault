@@ -7,8 +7,8 @@
     line: "{{ config_text.line }}"
     backrefs: true
   loop:
-    - { regexp: '^#tls_cert_file\s(.*?)$', line: 'tls_cert_file  \1' }
-    - { regexp: '^#tls_key_file\s(.*?)$', line: 'tls_key_file  \1' }
-    - { regexp: '^tls_disable(\s*=\s*).*?$', line: 'tls_disable\1"false"' }
+    - { regexp: '^(\s*)#tls_cert_file\s(.*?)$', line: '\1tls_cert_file  \2' }
+    - { regexp: '^(\s*)#tls_key_file\s(.*?)$', line: '\1tls_key_file  \2' }
+    - { regexp: '^(\s*)tls_disable(\s*=\s*).*?$', line: '\1tls_disable\2"false"' }
   loop_control:
     loop_var: config_text
