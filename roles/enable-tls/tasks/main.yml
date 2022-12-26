@@ -4,6 +4,7 @@
   include_tasks: enable-tls-consul.yml
   vars:
     config_file: "{{ base_consul_dir }}/{{ server }}/config/consul.hcl"
+  register: consul_config_result
   loop: "{{ consul_servers }}"
   loop_control:
     loop_var: server
@@ -19,6 +20,7 @@
   include_tasks: enable-tls-vault.yml
   vars:
     config_file: "{{ base_vault_dir }}/{{ item.key }}/config/vault.hcl"
+  register: vault_config_result 
   with_dict: "{{ vault_servers }}"
 
 
@@ -36,7 +38,7 @@
   loop_control:
     loop_var: consul_server
   when:
-    - consul_key_added is defined and consul_key_added.changed
+    - consul_config_result.changed
 
 - name: (Re)start vault docker containers
   include_role:
@@ -53,6 +55,6 @@
     container_restart: yes
   with_dict: "{{ vault_containers }}"
   when:
-    - vault_consul_key_added is defined and vault_consul_key_added.changed
+    - vault_config_result.changed
 
   #TODO same again for Vault servers (Vault & Consul certs)
