@@ -1,0 +1,11 @@
+---
+
+- name: Set the vault config to use TLS
+  lineinfile:
+    dest: "{{ config_file}}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^#tls_cert_file\s(.*?)$', line: 'tls_cert_file\s\s\1' }
+    - { regexp: '^#tls_key_file\s(.*?)$', line: 'tls_key_file\s\s\1' }
+    - { regexp: '^tls_disable(\s*=\s*).*?$', line: 'tls_disable\1"false"' }
