@@ -3,8 +3,10 @@
 - name: Update consul server TLS configuration
   include_tasks: enable-tls-consul.yml
   vars:
-    config_file: "{{ base_consul_dir }}/{{ item }}/config/consul.hcl"
+    config_file: "{{ base_consul_dir }}/{{ server }}/config/consul.hcl"
   loop: "{{ consul_servers }}"
+  loop_control:
+    loop_var: server
 
 - name: Update the vault consul client TLS configuration
   include_tasks: enable-tls-consul.yml
