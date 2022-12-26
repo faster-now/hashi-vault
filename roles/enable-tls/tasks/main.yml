@@ -23,7 +23,13 @@
   register: vault_config_result 
   with_dict: "{{ vault_servers }}"
 
+- name: Display the consul results
+  ansible.builtin.debug:
+    msg: "{{ consul_config_result }}"
 
+- name: Display the vault results
+  ansible.builtin.debug:
+    msg: "{{ vault_config_result }}"
 
 - name: (Re)start consul docker containers
   include_role:
