@@ -14,7 +14,8 @@
 
 - name: Write Vault TLS certificate with issung CA cert appended
   copy:
-    content: "{{ certs_and_keys.data.data.certificate }}\\\\n{{ certs_and_keys.data.data.issuing_ca }}"
+    content: "{{ certs_and_keys.data.data.certificate }}
+    {{ certs_and_keys.data.data.issuing_ca }}"
     dest: "{{ cert_file }}"
 
 - name: Write TLS private key to file
