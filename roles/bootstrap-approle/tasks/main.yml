@@ -70,7 +70,6 @@
       path: auth/approle-tf/role/terraform
       data:
         policies: "tf-policy"
-        token_type: batch
       token: "{{ vault_token }}"
       token_validate: false
 
