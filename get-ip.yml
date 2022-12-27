@@ -13,4 +13,4 @@
 
     - name: Display public ip
       ansible.builtin.debug:
-        msg: "{{ ip_result }}"
+        msg: "{{ ip_result.ansible_facts.ipify_public_ip}}"
