@@ -1,12 +1,20 @@
 ---
 
+- name: Get the public IP of the localhost which is running the Vault docker container(s)
+  register: ip_result
+  community.general.ipify_facts:
+
+    # - name: Display public ip
+    #   ansible.builtin.debug:
+    #     msg: "{{ ip_result.ansible_facts.ipify_public_ip}}"
+
 - name: Create TLS certificate
   community.hashi_vault.vault_write:
     url: "{{ vault_url }}"
     path: pki_int/issue/leaf_certs
     data:
       common_name: "{{ cname }}"
-      alt_names: "{{ alt_names }}"
+      alt_names: "{{ alt_names }},{{ ip_result.ansible_facts.ipify_public_ip }}"
       ttl: "{{ cert_lifetime }}"
     token: "{{ vault_token }}"
     token_validate: false
