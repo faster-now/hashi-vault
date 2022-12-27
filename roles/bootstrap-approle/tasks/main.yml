@@ -79,7 +79,7 @@
       url: "{{ vault_url }}"
       path: auth/approle-tf/role/terraform/role-id
       data:
-        role-id: "{{ role_id }}"
+        role_id: "{{ role_id }}"
       token: "{{ vault_token }}"
       token_validate: false
 
@@ -88,7 +88,7 @@
       url: "{{ vault_url }}"
       path: auth/approle-tf/role/terraform/custom-secret-id
       data:
-        secret-id: "{{ secret_id }}"
+        secret_id: "{{ secret_id }}"
       token: "{{ vault_token }}"
       token_validate: false
   when:
