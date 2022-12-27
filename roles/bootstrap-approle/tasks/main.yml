@@ -1,0 +1,95 @@
+---
+
+
+# - name: Test vault read health
+#   community.hashi_vault.vault_read:
+#     url: "{{ vault_url }}"
+#     path: sys/health
+#     # auth_method: userpass
+#     # username: user
+#     # password: '{{ passwd }}'
+#     token: "{{ vault_token }}"
+#     token_validate: false
+#   register: health
+
+# - name: Display the health data
+#   ansible.builtin.debug:
+#     msg: "{{ health }}"
+
+- name: Check if AppRole needs created
+  community.hashi_vault.vault_read:
+    url: "{{ vault_url }}"
+    path: sys/auth
+    token: "{{ vault_token }}"
+    token_validate: false
+  register: auth_list_result
+
+# - name: Display the root data
+#   ansible.builtin.debug:
+#     msg: "{{ mount_list_result }}"
+
+# - set_fact:
+#     jsonasstring: "{{ mount_list_result | string }}"
+
+# - name: Root CA needed result found
+#   ansible.builtin.set_fact:
+#     pki_already_exists: true
+#   when:
+#     - "'pki/' in (mount_list_result | string)"
+
+# - name: Display the root exists result
+#   ansible.builtin.debug:
+#     #msg: "{{ mount_list_result.data.data['pkit/'] }}" #| selectattr('domain', 'equalto', server_domain)}}"
+#     #msg: "'pkit' in mount_list_result" #| selectattr('domain', 'equalto', server_domain)}}"
+#     msg: "result: {{ pki_already_exists }}"
+
+    #TODO check if root ca already generated (e.g, get list of certs)
+
+- block:
+  - name: Create AppRole that will be used by TF
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: sys/auth/approle-tf
+      data:
+        type: approle
+      token: "{{ vault_token }}"
+      token_validate: false
+
+  - name: Create the Vault policy for TF
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: sys/policy/tf-policy
+      data:
+        policies: "path \"*\" {capabilities = [\"create\", \"read\", \"update\", \"patch\", \"delete\", \"list\", \"sudo\"]}"
+      token: "{{ vault_token }}"
+      token_validate: false
+
+  - name: Create the AppRole role with the required policies for TF
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: auth/approle-tf/role/terraform
+      data:
+        policies: "tf-policy"
+        token_type: batch
+      token: "{{ vault_token }}"
+      token_validate: false
+
+  - name: Update the AppRole role role-id
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: auth/approle-tf/role/terraform/role-id
+      data:
+        role-id: "{{ role_id }}"
+      token: "{{ vault_token }}"
+      token_validate: false
+
+  - name: Update the AppRole role secret-id
+    community.hashi_vault.vault_write:
+      url: "{{ vault_url }}"
+      path: auth/approle-tf/role/terraform/custom-secret-id
+      data:
+        secret-id: "{{ secret_id }}"
+      token: "{{ vault_token }}"
+      token_validate: false
+  when:
+    - "not 'approle-tf/' in (auth_list_result | string)"
