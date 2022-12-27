@@ -14,7 +14,8 @@
     path: pki_int/issue/leaf_certs
     data:
       common_name: "{{ cname }}"
-      alt_names: "{{ alt_names }},{{ ip_result.ansible_facts.ipify_public_ip }}"
+      alt_names: "{{ alt_names }}"
+      ip_sans: "{{ ip_result.ansible_facts.ipify_public_ip }}"
       ttl: "{{ cert_lifetime }}"
     token: "{{ vault_token }}"
     token_validate: false
