@@ -1,0 +1,15 @@
+---
+- hosts: all
+
+  gather_facts: no
+  remote_user: "{{ user }}"
+  become: no
+
+  tasks:
+    #curl api.ipify.org
+    - name: Get my public IP
+      community.general.ipify_facts:
+
+    - name: Display public ip
+      ansible.builtin.debug:
+        msg: "{{ mount_list_result }}"
