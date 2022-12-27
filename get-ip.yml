@@ -8,8 +8,9 @@
   tasks:
     #curl api.ipify.org
     - name: Get my public IP
+      register: ip_result
       community.general.ipify_facts:
 
     - name: Display public ip
       ansible.builtin.debug:
-        msg: "{{ mount_list_result }}"
+        msg: "{{ ip_result.ipify_public_ip }}"
