@@ -48,6 +48,10 @@
     #       path: "{{ temp_build_dir }}/"
     #   when: dir_to_check.stat.isdir is defined and dir_to_check.stat.isdir
 
+    - name: First vault playbook task
+      debug:
+        msg: "{{ vault_image_name }}"
+
     - name: Check if local persistent storage directory for Vault servers exists
       stat:
         path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
