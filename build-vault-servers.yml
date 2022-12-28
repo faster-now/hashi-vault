@@ -69,7 +69,7 @@
 
     - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
       file:
-        path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+        path: "{{ item.path }}"
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
