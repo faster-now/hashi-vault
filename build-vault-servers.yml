@@ -78,8 +78,7 @@
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
-        mode: 0777
-      become: yes  
+        mode: 0775
       with_dict: "{{ vault_servers }}"      
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
@@ -88,8 +87,7 @@
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
-        mode: 0777
-      become: yes  
+        mode: 0775
       with_dict: "{{ vault_servers }}"
 
     # - name: Create persistent storage directory for Vault config (ready for Docker volume)
