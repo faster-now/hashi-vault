@@ -16,9 +16,13 @@
 #   ansible.builtin.debug:
 #     msg: "{{ health }}"
 
+- name: Setting the Vault URL
+  set_fact:
+    vault_addr: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
+
 - name: Check if AppRole needs created
   community.hashi_vault.vault_read:
-    url: "{{ vault_url }}"
+    url: "{{ vault_addr }}"
     path: sys/auth
     token: "{{ vault_token }}"
     token_validate: false
