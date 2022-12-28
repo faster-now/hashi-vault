@@ -121,28 +121,28 @@
 
     - name: Create vault docker containers
       include_role:
-        name: vault-container-restart
-      vars:
-        container_name: "{{ item.key }}"
-        vault_image_version: "v1"
-        host_port: "{{ item.value }}"
-        container_port: "{{ item.value }}"
-        vault_config_consul_dir: "{{ base_vault_dir }}/{{ item.key }}/consul/config"
-        vault_config_dir: "{{ base_vault_dir }}/{{ item.key }}/vault/config"
-        consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-        vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
-        container_restart: yes
-      with_dict: "{{ vault_containers }}"
-      #loop: "{{ consul_servers }}"
-      #loop_control:
-      #  loop_var: consul_server
+        name: vault-container-restart-all
 
     - name: Enable consul layer gossip encryption
       include_role:
         name: consul-enable-encryption
 
-    - name: Initialise and unseal Vault
+    - name: Initialise Vault
       include_role:
         name: vault-init
 
+    - name: Unseal Vault
+      include_role:
+        name: vault-unseal
+
+    - name: Enable Vault audit logs
+      include_role:
+        name: vault-enable-audit
     
+    - name: Bootstrap AppRole
+      include_role:
+        name: bootstrap-approle
+
+    - name: Enable TLS
+      include_role:
+        name: enable-tls

@@ -1,0 +1,42 @@
+---
+
+#is_https and vault_port come from dependent role
+- name: Setting the Vault URL
+  set_fact:
+    vault_addr: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
+
+- name: Check if file audit is enabled
+  uri:
+    url: "{{ vault_addr }}/v1/sys/audit"
+    headers: 
+      X-Vault-Token: "{{ vault_root_token }}"
+    validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
+    status_code: 200
+    return_content: yes
+  validate_certs: false
+  register: file_audit_response
+  run_once: true  
+  when:
+    - vault_root_token is defined
+    - vault_root_token|length > 0
+
+- name: Enable audit to file/disk
+  uri:
+    url: "{{ vault_addr }}/v1/sys/audit/file"
+    headers: 
+      X-Vault-Token: "{{ vault_root_token }}"
+    body:
+      type: file
+      options:
+        file_path: "{{ vault_container_audit_dir }}/audit.log"
+    body_format: json
+    method: PUT
+    validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
+    status_code: 200,204
+  validate_certs: false
+  register: enable_file_audit
+  run_once: true
+  when:
+    - file_audit_response.status == 200
+    - file_audit_response.json.data|length == 0
+    
