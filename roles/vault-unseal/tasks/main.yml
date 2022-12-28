@@ -14,15 +14,11 @@
   include_role:
     name: fetch-vault-protocol
   vars:
-    port: 8200
+    port: "{{ vault_port }}"
 
 - name: Setting the Vault URL
   set_fact:
     vault_addr: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
-
-- name: debug unseal vault protocol
-  debug:
-    msg: "{{ is_https }}"
 
 - name: Check if vault is sealed
   uri:
