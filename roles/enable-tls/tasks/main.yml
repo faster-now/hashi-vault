@@ -23,15 +23,15 @@
   register: vault_config_result 
   with_dict: "{{ vault_servers }}"
 
-- name: Display the consul results
-  ansible.builtin.debug:
-    msg: "{{ consul_config_result }}"
+# - name: Display the consul results
+#   ansible.builtin.debug:
+#     msg: "{{ consul_config_result }}"
 
-- name: Display the vault results
-  ansible.builtin.debug:
-    msg: "{{ vault_config_result }}"
+# - name: Display the vault results
+#   ansible.builtin.debug:
+#     msg: "{{ vault_config_result }}"
 
-#TODO: Restart when condition below is not working using registered loop var
+#Restart when condition below is not working using registered loop var. However the update config file always returns changed anyway
 
 - name: (Re)start consul docker containers all
   include_role:

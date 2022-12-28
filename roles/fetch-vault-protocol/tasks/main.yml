@@ -12,10 +12,6 @@
   set_fact:
     is_https: "{{ vault_health_response.status == 400 }}"
 
-- name: debug fetch vault protocol
-  debug:
-    msg: "{{ vault_health_response }}"
-
 # #Downside of this is only checking and individual Vault host
 # - name: Check if using HTTPS
 #   lineinfile:

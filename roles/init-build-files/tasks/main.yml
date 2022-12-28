@@ -4,9 +4,9 @@
 #dest_build_dir should be the specific build dir for the relevant service e.g. ~/vault-build (no trailing /)
 
 
-- debug:
-    msg: "The base dir is set to {{ base_dir }}. 
-          The file is set to {{ consul_servers[0] }}."
+# - debug:
+#     msg: "The base dir is set to {{ base_dir }}. 
+#           The file is set to {{ consul_servers[0] }}."
 
 - name: Check if the temp build config file exists
   ansible.builtin.stat:

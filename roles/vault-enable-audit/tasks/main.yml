@@ -22,10 +22,9 @@
   retries: 12 #12*3 = circa half a minute
   until: ('status' in file_audit_response) and (file_audit_response.status != -1) and (file_audit_response.status != 500)
 
-
-- name: audit response
-  debug:
-    msg: "{{ file_audit_response }}"    
+# - name: audit response
+#   debug:
+#     msg: "{{ file_audit_response }}"    
 
 - name: Enable audit to file/disk
   uri:
