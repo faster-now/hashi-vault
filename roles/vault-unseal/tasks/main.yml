@@ -13,6 +13,8 @@
 - name: Get Vault protocol
   include_role:
     name: fetch-vault-protocol
+    vars:
+      port: 8200
 
 - name: Setting the Vault URL
   set_fact:
