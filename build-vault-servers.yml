@@ -62,6 +62,11 @@
       debug:
         msg: "{{ file_details }}"
 
+    - name: Vault dir exists individual results
+      debug:
+        msg: "Found- {{ item }}"
+      with_items: file_details.results 
+
     - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
       file:
         path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
