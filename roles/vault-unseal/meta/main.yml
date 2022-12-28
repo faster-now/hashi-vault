@@ -1,4 +1,4 @@
 ---
-dependencies:
-  - role: fetch-vault-protocol
-    tags: ['unseal']
+# dependencies:
+#   - role: fetch-vault-protocol
+#     tags: ['unseal']
