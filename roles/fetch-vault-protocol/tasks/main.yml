@@ -2,8 +2,11 @@
 - name: Check if vault is using TLS
   uri:
     url: "http://{{ inventory_hostname }}:{{ vault_port }}/v1/sys/health"
-    status_code: 200,400,429,472,501,503
+    status_code: 200,400,429,472,501,503,-1
   register: vault_health_response
+  retries: 4
+  delay: 2
+  until: ('status' in vault_health_response) and (vault_health_response.status != -1)
 
 - name: Is using HTTPS
   set_fact:
