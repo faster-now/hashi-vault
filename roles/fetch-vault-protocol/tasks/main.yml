@@ -9,6 +9,10 @@
   set_fact:
     is_https: vault_health_response.status == 400
 
+- name: Display the health data
+  debug:
+    msg: "{{ vault_health_response }}"
+
 
 # #Downside of this is only checking and individual Vault host
 # - name: Check if using HTTPS
