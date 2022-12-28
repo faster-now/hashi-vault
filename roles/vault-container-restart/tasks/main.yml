@@ -13,7 +13,7 @@
       - IPC_LOCK
     memory: 400m
     memory_swap: 2g
-    restart: "{{ container_restart }}"
+    restart: "{{ vault_container_restart }}"
     networks:
       - name: "{{ docker_network }}"
     ports: #TODO needs updated to account for load balancer and potentially different port number exposed for each docker container
