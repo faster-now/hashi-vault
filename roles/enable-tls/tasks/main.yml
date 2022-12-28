@@ -36,11 +36,11 @@
 - name: (Re)start consul docker containers
   include_role:
     name: consul-container-restart-all
-  when:
-    - consul_key_added is defined and consul_key_added.changed
+  # when:
+  #   - consul_key_added is defined and consul_key_added.changed
 
 - name: (Re)start vault docker containers
   include_role:
     name: vault-container-restart-all
-  when:
-    - vault_consul_key_added is defined and vault_consul_key_added.changed
+  # when:
+  #   - vault_consul_key_added is defined and vault_consul_key_added.changed

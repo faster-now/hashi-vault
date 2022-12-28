@@ -1,2 +1,2 @@
 ---
-container_restart_all: true
+vault_container_restart_all: true
