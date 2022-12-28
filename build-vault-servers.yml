@@ -71,7 +71,7 @@
         mode: 0775
       with_items: file_details.results
       when:
-        - file_details.results.stat.exists
+        - item.stat.exists
       
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
