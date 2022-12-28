@@ -42,5 +42,9 @@
 - name: (Re)start vault docker containers
   include_role:
     name: vault-container-restart-all
+
+- name: Unseal Vault
+  include_role:
+    name: vault-unseal
   # when:
   #   - vault_consul_key_added is defined and vault_consul_key_added.changed
