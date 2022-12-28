@@ -7,7 +7,7 @@
 
 - name: Is using HTTPS
   set_fact:
-    is_https: vault_health_response.status == 400
+    is_https: vault_health_response.status == 400 | bool
 
 - name: Display the health data
   debug:
