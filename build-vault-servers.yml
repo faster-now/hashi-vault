@@ -48,14 +48,21 @@
     #       path: "{{ temp_build_dir }}/"
     #   when: dir_to_check.stat.isdir is defined and dir_to_check.stat.isdir
 
-    - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
-      file:
-        path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
-        state: directory
-        owner: "{{user}}"
-        group: "{{user}}"
-        mode: 0775
-      with_dict: "{{ vault_servers }}"  
+    - block:
+      - name: Check if local persistent storage directory for Vault servers exists
+        stat:
+          path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+        register: file_details
+
+      - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
+        file:
+          path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
+          state: directory
+          owner: "{{user}}"
+          group: "{{user}}"
+          mode: 0775
+        when: file_details.stat.exists
+      with_dict: "{{ vault_servers }}" 
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
       file:
