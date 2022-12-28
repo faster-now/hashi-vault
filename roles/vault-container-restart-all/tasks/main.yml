@@ -14,5 +14,5 @@
     vault_config_dir: "{{ base_vault_dir }}/{{ item.key }}/vault/config"
     consul_storage_dir: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
     vault_host_audit_dir: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
-    container_restart: "{{ container_restart }}"
+    container_restart: "{{ container_restart_all }}"
   with_dict: "{{ vault_containers }}"

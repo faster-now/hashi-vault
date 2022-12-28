@@ -1,2 +1,2 @@
 ---
-container_restart: true
+container_restart_all: true
