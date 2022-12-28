@@ -65,7 +65,7 @@
     - name: Vault dir exists individual results
       debug:
         msg: "Found- {{ item }}"
-      with_items: file_details.results 
+      with_items: "{{ file_details.results }}"
 
     - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
       file:
@@ -74,7 +74,7 @@
         owner: "{{user}}"
         group: "{{user}}"
         mode: 0775
-      with_items: file_details.results
+      with_items: "{{ file_details.results }}"
       when:
         - item.stat.exists
       
