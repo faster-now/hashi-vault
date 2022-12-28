@@ -26,6 +26,7 @@
     path: sys/auth
     token: "{{ vault_token }}"
     token_validate: false
+    validate_certs: false
   register: auth_list_result
 
 # - name: Display the root data
