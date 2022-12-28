@@ -13,7 +13,6 @@
     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
     status_code: 200
     return_content: yes
-  validate_certs: false
   register: file_audit_response
   run_once: true  
   when:
@@ -33,7 +32,6 @@
     method: PUT
     validate_certs: "{{ tls_skip_verify | ternary('false', 'true') }}"
     status_code: 200,204
-  validate_certs: false
   register: enable_file_audit
   run_once: true
   when:
