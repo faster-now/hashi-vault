@@ -60,17 +60,27 @@
       register: file_details
       with_dict: "{{ vault_servers }}"
 
+    #This is flawed since the path doesnt exist where the directory doesnt already exist
+    # - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
+    #   file:
+    #     path: "{{ item.stat.path }}"
+    #     state: directory
+    #     owner: "{{user}}"
+    #     group: "{{user}}"
+    #     mode: 0775
+    #   with_items: "{{ file_details.results }}"
+    #   when:
+    #     - not item.stat.exists
+
     - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
       file:
-        path: "{{ item.stat.path }}"
+        path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
         state: directory
         owner: "{{user}}"
         group: "{{user}}"
-        mode: 0775
-      with_items: "{{ file_details.results }}"
-      when:
-        - not item.stat.exists
-      
+        mode: 0777
+      become: yes  
+      with_dict: "{{ vault_servers }}"      
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
       file:
