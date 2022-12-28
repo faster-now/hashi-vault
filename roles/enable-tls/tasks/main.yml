@@ -33,7 +33,7 @@
 
 #TODO: Restart when condition below is not working using registered loop var
 
-- name: (Re)start consul docker containers
+- name: (Re)start consul docker containers all
   include_role:
     name: consul-container-restart-all
   # when:

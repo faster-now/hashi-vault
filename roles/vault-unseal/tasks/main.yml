@@ -13,14 +13,6 @@
   set_fact:
     vault_addr: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
 
-- name: Setting fact boolean value
-  debug:
-    msg: "{{ is_https }}"
-
-- name: URL
-  debug:
-    msg: "{{ vault_addr }}"
-
 - name: Check if vault is sealed
   uri:
     url: "{{ vault_addr }}/v1/sys/health"

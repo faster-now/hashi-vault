@@ -1,2 +1,2 @@
 ---
-consul_container_restart: false
+consul_container_restart: true
