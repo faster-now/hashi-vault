@@ -52,20 +52,13 @@
       debug:
         msg: "{{ vault_image_name }}"
 
+    # Check if dir exists first as using the standard approach as used below for audit-logs seemed to stall/hang the playbook run sometimes.
+    # Therefore check if exists first and only create it if not
     - name: Check if local persistent storage directory for Vault servers exists
       stat:
         path: "{{ base_vault_dir }}/{{ item.key }}/consul-storage"
       register: file_details
       with_dict: "{{ vault_servers }}"
-
-    - name: Vault dir exists check
-      debug:
-        msg: "{{ file_details }}"
-
-    - name: Vault dir exists individual results
-      debug:
-        msg: "Found- {{ item }}"
-      with_items: "{{ file_details.results }}"
 
     - name: Create local persistent storage directory for Vault servers (in preparation for Docker volume)
       file:
@@ -76,7 +69,7 @@
         mode: 0775
       with_items: "{{ file_details.results }}"
       when:
-        - item.stat.exists
+        - not item.stat.exists
       
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)

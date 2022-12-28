@@ -9,3 +9,4 @@ base_vault_dir: ~/vault
 vault_config_dir: ~/vault/config
 vault_image_name: my-vault
 vault_container_audit_dir: /opt/vault
+vault_port: 8200 #the main Vault port to try to connect to when running HTTP(S) operations against Vault
