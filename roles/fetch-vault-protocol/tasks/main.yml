@@ -13,7 +13,9 @@
   debug:
     msg: "{{ vault_health_response }}"
 
-
+- name: Setting fact boolean value
+  debug:
+    msg: "{{ is_https }}"
 # #Downside of this is only checking and individual Vault host
 # - name: Check if using HTTPS
 #   lineinfile:
