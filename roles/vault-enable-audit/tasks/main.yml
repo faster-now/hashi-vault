@@ -19,6 +19,10 @@
     - vault_root_token is defined
     - vault_root_token|length > 0
 
+- name: audit response
+  debug:
+    msg: "{{ file_audit_response }}"    
+
 - name: Enable audit to file/disk
   uri:
     url: "{{ vault_addr }}/v1/sys/audit/file"
