@@ -83,6 +83,7 @@
       with_dict: "{{ vault_servers }}"      
 
     - name: Create persistent storage directory for Vault audit logs (ready for Docker volume)
+      become: true
       file:
         path: "{{ base_vault_dir }}/{{ item.key }}/audit-logs"
         state: directory
