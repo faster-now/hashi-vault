@@ -13,6 +13,7 @@
       alt_names: "{{ alt_names }}"
       ttl: "{{ cert_lifetime }}"
     token: "{{ vault_token }}"
+    validate_certs: false
     token_validate: false
   register: consul_certs_and_keys
 
