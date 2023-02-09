@@ -18,6 +18,7 @@
       ip_sans: "{{ ip_result.ansible_facts.ipify_public_ip }}"
       ttl: "{{ cert_lifetime }}"
     token: "{{ vault_token }}"
+    validate_certs: false
     token_validate: false
   register: certs_and_keys
 
