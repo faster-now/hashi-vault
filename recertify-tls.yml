@@ -6,6 +6,7 @@
       - consul-a
       - consul-b
       - consul-c
+    vault_port: 8200
 
   gather_facts: no
   remote_user: "{{ user }}"
