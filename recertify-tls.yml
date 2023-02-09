@@ -2,6 +2,10 @@
 - hosts: all
   vars:
     user: azureuser
+    consul_servers:
+      - consul-a
+      - consul-b
+      - consul-c
 
   gather_facts: no
   remote_user: "{{ user }}"
