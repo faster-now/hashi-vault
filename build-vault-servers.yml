@@ -168,6 +168,10 @@
       include_role:
         name: bootstrap-approle
 
+    - name: Create CAs
+      include_role:
+        name: create-issuing-ca
+
     - name: Enable TLS
       include_role:
         name: enable-tls

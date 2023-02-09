@@ -11,6 +11,8 @@
     - name: Create new TLS certificates for Vault and Consul
       include_role:
         name: create-tls-certs
+      vars:
+        is_https: true
 
     - name: (Re)start consul docker containers
       include_role:
