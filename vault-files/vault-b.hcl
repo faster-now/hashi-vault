@@ -14,7 +14,7 @@ storage "consul" {
 }
 
 ui                              = true
-#cluster_addr                   = loadbalancerFQDN:443
-cluster_addr                    = "http://vault-b:8800"
-#api_addr                       = external ip of this host:8201
-api_addr                        = "http://vault-b:8801"
+cluster_addr                    = "http://vault-b:8801"
+#cluster_addr                   = external ip of this host:8201
+api_addr                        = "http://vault-b:8800"
+#api_addr                       = loadbalancerFQDN:443

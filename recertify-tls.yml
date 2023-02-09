@@ -1,0 +1,21 @@
+---
+- hosts: all
+  vars:
+    user: azureuser
+
+  gather_facts: no
+  remote_user: "{{ user }}"
+  become: no
+
+  tasks:
+    - name: Create new TLS certificates for Vault and Consul
+      include_role:
+        name: create-tls-certs
+
+    - name: (Re)start consul docker containers
+      include_role:
+        name: consul-container-restart-all
+
+    - name: (Re)start Vault docker containers
+      include_role:
+        name: vault-container-restart-all
