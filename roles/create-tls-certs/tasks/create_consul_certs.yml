@@ -2,7 +2,8 @@
 
 - name: Setting the Vault URL
   set_fact:
-    vault_url: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
+    vault_url: "http://{{ inventory_hostname }}:{{ vault_port }}"
+    #vault_url: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
 
 - name: Create TLS certificate
   community.hashi_vault.vault_write:
