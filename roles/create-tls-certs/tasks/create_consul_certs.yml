@@ -2,6 +2,7 @@
 
 - name: Setting the Vault URL
   set_fact:
+  # when recertifying TLS certs for already expired certs it is necessary to disable TLS and then use the line below to use HTTP only
     #vault_url: "http://{{ inventory_hostname }}:{{ vault_port }}"
     vault_url: "{{ is_https | ternary('https', 'http') }}://{{ inventory_hostname }}:{{ vault_port }}"
 
