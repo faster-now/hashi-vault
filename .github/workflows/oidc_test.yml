@@ -38,6 +38,7 @@ jobs:
       with: 
         method: jwt
         url: ${{ secrets.VAULT_ADDR }}
+        tlsSkipVerify: true
         namespace: ${{ secrets.VAULT_NAMESPACE }}
         role: ${{ secrets.VAULT_ROLE }}
         secrets: ${{ secrets.VAULT_SECRET_PATH }} ${{ secrets.VAULT_SECRET_KEY }} | MY_SECRET
