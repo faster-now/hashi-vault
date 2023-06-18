@@ -110,5 +110,6 @@
     path: pki_int/roles/leaf_certs
     data:
       allow_any_name: true
+      ttl: "{{ leaf_cert_lifetime }}"
     token: "{{ vault_token }}"
     token_validate: false
