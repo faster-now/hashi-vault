@@ -45,5 +45,7 @@ jobs:
         secrets: ${{ secrets.VAULT_SECRET_PATH }} ${{ secrets.VAULT_SECRET_KEY }} | MY_SECRET
 
     - name: Print Secrets
-      run: |
-          echo '${{ steps.secretdata.outputs.MY_SECRET }}'
+      run: | 
+          echo ${{steps.secretdata.outputs.MY_SECRET}} | sed 's/./& /g'
+      #run: |
+      #    echo '${{ steps.secretdata.outputs.MY_SECRET }}'
